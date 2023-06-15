@@ -18,14 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
@@ -37,15 +41,16 @@ enum class Measure {
 
 class MainActivity : ComponentActivity() {
 
-    val weightSliderValues = generateSpinnerValues(40, 160)
-    val heightSliderValues = generateSpinnerValues(120, 240)
+    private val weightSliderValues = generateSpinnerValues(40, 160)
+    private val heightSliderValues = generateSpinnerValues(130, 200)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
 
             var selectedGender by rememberSaveable { mutableStateOf(-1) }
-            var sliderWeight by remember { mutableStateOf(0.3f) }
+            var sliderHeight by rememberSaveable { mutableStateOf(0.3f) }
+            var sliderWeight by rememberSaveable { mutableStateOf(0.3f) }
 
             BMICalculatorTheme {
                 // A surface container using the 'background' color from the theme
@@ -54,7 +59,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ChooseGender()
+//                    ChooseGender()
+
+                    FillHeight(
+                        sliderValues = heightSliderValues,
+                        selectedGender = selectedGender,
+                        height = sliderHeight
+                    ) { sliderHeight = it }
+
 //                    FillWeight(
 //                        sliderValues = weightSliderValues,
 //                        selectedGender = selectedGender,
@@ -89,6 +101,19 @@ fun ChooseGenderPreview() {
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
+fun FillHeightPreview() {
+    BMICalculatorTheme {
+        FillHeight(
+            sliderValues = generateSpinnerValues(130, 200),
+            selectedGender = 1,
+            height = 0.0f
+        ) { }
+    }
+}
+
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
 fun FillWeightPreview() {
     BMICalculatorTheme {
         FillWeight(
@@ -112,22 +137,14 @@ fun ChooseGender() {
     var selectedGender by rememberSaveable { mutableStateOf(-1) }
 
     Column(
-        modifier = Modifier.padding(24.dp).fillMaxHeight(),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .padding(24.dp)
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start,
     ) {
-        Text(
-            text = "Gender",
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.titleLarge
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Please choose your gender to accurate calculations",
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.labelSmall
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+
+        TitleAndDescription(title = "Gender", description = "Please choose your gender to accurate calculations" )
 
         Row() {
             Image(
@@ -137,10 +154,8 @@ fun ChooseGender() {
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth(0.55f)
                     .fillMaxHeight(0.7f)
-                    //.align(Alignment.BottomCenter)
-                    //.background(Color.Green)
                     .clickable {
                         selectedGender = 0
                     }
@@ -152,15 +167,13 @@ fun ChooseGender() {
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
+                    .fillMaxWidth(0.9f)
                     .fillMaxHeight(0.7f)
-                    //.background(Color.Green)
                     .clickable {
                         selectedGender = 1
                     }
             )
         }
-        Spacer(modifier = Modifier.height(4.dp))
 
         Row() {
             Text(
@@ -177,26 +190,80 @@ fun ChooseGender() {
             )
         }
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Button(
+            enabled = selectedGender >= 0,
+            onClick = { /*TODO*/ }
         ) {
-            Button(
-                enabled = selectedGender >= 0,
-                modifier = Modifier.weight(1f, false),
-                onClick = { /*TODO*/ }
-            ) {
-                Text(
-                    text = "Next",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                )
-            }
+            Text(
+                text = "Next",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
         }
 
     }
 
+}
+
+
+@Composable
+fun FillHeight(
+    sliderValues: List<Int>,
+    selectedGender: Int,
+    height: Float,
+    onSliderValueChange: (Float) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(24.dp)
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.Start,
+    ) {
+        TitleAndDescription("Height", "Please choose your height using the slider")
+        FillMetrics(sliderValues, height, Measure.HEIGHT)
+
+        Box {
+            Image(
+                painter = if (selectedGender == 0) painterResource(R.drawable.male_selected) else painterResource(
+                    R.drawable.female_selected
+                ),
+                contentDescription = "",
+                contentScale = ContentScale.FillHeight,
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight(0.7f)
+                //.background(Color.Green)
+            )
+            Column(
+                modifier = Modifier
+                    //.background(Color.Green)
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight(0.7f)
+            ) {
+                VerticalSlider(
+                    values = sliderValues,
+                    sliderPosition = height,
+                    onSliderValueChange = onSliderValueChange
+                )
+            }
+        }
+
+        Button(
+            enabled = selectedGender >= 0,
+            //modifier = Modifier.weight(1f, false),
+            onClick = { /*TODO*/ }
+        ) {
+            Text(
+                text = "Next",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
+
+    }
 }
 
 /**
@@ -209,59 +276,45 @@ fun FillWeight(
     weight: Float,
     onSliderValueChange: (Float) -> Unit
 ) {
-    Log.d(
-        "fpiardi",
-        "FillWeight selectedGender=$selectedGender weight=$weight func=$onSliderValueChange"
-    )
-
     Column(
-        modifier = Modifier.padding(24.dp).fillMaxHeight(),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .padding(24.dp)
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start,
     ) {
-        Text(
-            text = "Weight",
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.titleLarge
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Please choose your weight using the slider",
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.labelSmall
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+
+        TitleAndDescription("Weight", "Please choose your weight using the slider")
         FillMetrics(sliderValues, weight, Measure.WEIGHT)
 
-        Image(
-            painter = if (selectedGender == 0) painterResource(R.drawable.male_selected) else painterResource(
-                R.drawable.female_selected
-            ),
-            contentDescription = "",
-            contentScale = ContentScale.FillHeight,
-            modifier = Modifier
-                .fillMaxWidth(1f)
-                .fillMaxHeight(0.6f)
-            //.background(Color.Green)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        HorizontalSlider(
-            values = sliderValues,
-            sliderPosition = weight,
-            onSliderValueChange = onSliderValueChange
-        )
+        Column {
+            Image(
+                painter = if (selectedGender == 0) painterResource(R.drawable.male_selected) else painterResource(
+                    R.drawable.female_selected
+                ),
+                contentDescription = "",
+                contentScale = ContentScale.FillHeight,
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight(0.7f)
+                //.background(Color.Green)
+            )
+            HorizontalSlider(
+                values = sliderValues,
+                sliderPosition = weight,
+                onSliderValueChange = onSliderValueChange
+            )
+        }
 
         Button(
             enabled = selectedGender >= 0,
-            modifier = Modifier.weight(1f, false),
             onClick = { /*TODO*/ }
         ) {
             Text(
                 text = "Next",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .fillMaxWidth()
             )
         }
 
@@ -270,32 +323,97 @@ fun FillWeight(
 }
 
 @Composable
-private fun FillMetrics(sliderValues: List<Int>, sliderPosition: Float, measure: Measure) {
-    Log.d("fpiardi", "FillMetrics sliderPosition=$sliderPosition measure=$measure")
+private fun TitleAndDescription(title: String, description: String) {
+    Column() {
+        Text(
+            text = title,
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.titleLarge
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = description,
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.labelSmall
+        )
+    }
+}
 
+@Composable
+private fun FillMetrics(sliderValues: List<Int>, sliderPosition: Float, measure: Measure) {
     //default values for HEIGHT
-    var formattedString = "%.2f"
-    var calculatedValue = ((sliderPosition * sliderValues.size) + sliderValues.first()) / 100
+    var formattedString = "%.0f"
+    //var calculatedValue = (sliderPosition * sliderValues.size) + sliderValues.last()
+    var calculatedValue = (sliderPosition * sliderValues.size) + sliderValues.first()
     var label = "cm"
 
     if (measure == Measure.WEIGHT) {
-        formattedString = "%.0f"
-        calculatedValue = (sliderPosition * sliderValues.size) + sliderValues.first()
+        formattedString = "%.1f"
         label = "kg"
     }
 
-    Text(
-        text = String.format(formattedString, calculatedValue),
-        color = MaterialTheme.colorScheme.secondary,
-        style = MaterialTheme.typography.titleLarge
-    )
-    Spacer(modifier = Modifier.height(8.dp))
-    Text(
-        text = label,
-        color = MaterialTheme.colorScheme.secondary,
-        style = MaterialTheme.typography.labelSmall
-    )
-    Spacer(modifier = Modifier.height(24.dp))
+    TitleAndDescription(String.format(formattedString, calculatedValue), label)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VerticalSlider(
+    values: List<Int>,
+    sliderPosition: Float = 0f,
+    onSliderValueChange: (Float) -> Unit
+) {
+    Box(
+        contentAlignment = Alignment.CenterEnd,
+        modifier = Modifier
+            //.background(Color.Yellow)
+            .fillMaxHeight(1f)
+            .fillMaxWidth(1f)
+    ) {
+        HorizontalLines(values.reversed())
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.End
+        ) {
+            Slider(
+                thumb = {
+                    SliderDefaults.Thumb(
+                        interactionSource = MutableInteractionSource(),
+                        modifier = Modifier.offset(x = 5.dp),
+                        thumbSize = DpSize(8.dp, 40.dp),
+                        colors = customSliderColors()
+                    )
+                },
+                modifier = Modifier
+                    .graphicsLayer {
+                        rotationZ = 270f
+                        transformOrigin = TransformOrigin(0f, 0f)
+                    }
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(
+                            Constraints(
+                                minWidth = constraints.minHeight,
+                                maxWidth = constraints.maxHeight,
+                                minHeight = constraints.minWidth,
+                                maxHeight = constraints.maxWidth,
+                            )
+                        )
+                        layout(placeable.height, placeable.width) {
+                            placeable.place(-placeable.width, 0)
+                        }
+                    }
+                    .padding(bottom = 12.dp)
+                    .fillMaxWidth(),
+
+                colors = customSliderColors(),
+                value = sliderPosition,
+                onValueChange = { onSliderValueChange(it) }
+            )
+        }
+
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -334,6 +452,44 @@ private fun customSliderColors(): SliderColors = SliderDefaults.colors(
     activeTrackColor = Color.LightGray,
     thumbColor = Color.Green,
 )
+
+@Composable
+fun HorizontalLines(values: List<Int>) {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight(1f)
+            //.background(Color.Cyan)
+            .padding(horizontal = 24.dp)
+            .width(24.dp)
+    ) {
+        val drawPadding: Float = with(LocalDensity.current) { 5.dp.toPx() }
+        val textPaint = TextPaint()
+        textPaint.textSize = MaterialTheme.typography.titleLarge.fontSize.value
+
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val xStart = 0f
+            val xEnd = size.width
+            val distance: Float = (size.height.minus(1f * drawPadding)).div(values.size.minus(1))
+            values.forEachIndexed { index, _ ->
+                if (index.rem(5) == 0) {
+                    drawLine(
+                        color = Color.LightGray,
+                        start = Offset(x = xStart, y = drawPadding + index.times(distance)),
+                        end = Offset(x = xEnd, y = drawPadding + index.times(distance))
+                    )
+                }
+                if (index.rem(10) == 0) {
+                    this.drawContext.canvas.nativeCanvas.drawText(
+                        values[index].toString(), // text to be drawn
+                        (size.width * 1.15).toFloat(), // x position
+                        drawPadding + index.times(distance), // y position
+                        textPaint // color, thickness, fontSize, etc
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun VerticalLines(values: List<Int>) {
