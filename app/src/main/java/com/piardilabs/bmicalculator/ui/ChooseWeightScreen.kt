@@ -62,6 +62,7 @@ fun ChooseWeightScreen(
     modifier: Modifier = Modifier,
     onSliderValueChange: (Float) -> Unit
 ) {
+    val alreadyChangeSlide = (sliderPosition != DEFAULT_WEIGHT_SLIDER_POSITION)
 
     Column(
         modifier = modifier,
@@ -85,7 +86,7 @@ fun ChooseWeightScreen(
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier
                     .fillMaxWidth(1f)
-                    .fillMaxHeight(0.7f)
+                    .fillMaxHeight(0.75f)
             )
             HorizontalSlider(
                 values = sliderValues,
@@ -95,7 +96,7 @@ fun ChooseWeightScreen(
         }
 
         Button(
-            enabled = false, // selectedGender >= 0,
+            enabled = alreadyChangeSlide,
             onClick = { onNextButtonClicked() }
         ) {
             Text(
@@ -164,7 +165,6 @@ private fun VerticalLines(values: List<Int>) {
                     this.drawContext.canvas.nativeCanvas.drawText(
                         values[index].toString(), // text to be drawn
                         drawPadding + index.times(distance), // x position
-                        //(size.width * 1.9).toFloat(), // x position
                         (size.height * 1.9).toFloat(), // y position
                         textPaint // color, thickness, fontSize, etc
                     )

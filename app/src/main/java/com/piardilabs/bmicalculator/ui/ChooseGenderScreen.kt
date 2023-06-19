@@ -24,7 +24,8 @@ import com.piardilabs.bmicalculator.R
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
 
 @Preview(showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
 fun ChooseGenderPreview() {
     BMICalculatorTheme {

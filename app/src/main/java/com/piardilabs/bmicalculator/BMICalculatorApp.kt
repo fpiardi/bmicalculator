@@ -22,6 +22,10 @@ import androidx.navigation.compose.rememberNavController
 import com.piardilabs.bmicalculator.ui.ChooseGenderScreen
 import com.piardilabs.bmicalculator.ui.ChooseHeightScreen
 import com.piardilabs.bmicalculator.ui.ChooseWeightScreen
+import com.piardilabs.bmicalculator.ui.ResultScreen
+
+const val DEFAULT_HEIGHT_SLIDER_POSITION = 0.3f
+const val DEFAULT_WEIGHT_SLIDER_POSITION = 0.3f
 
 /**
  * enum values that represent the screens in the app
@@ -30,7 +34,7 @@ enum class BMICalculatorScreen(@StringRes val title: Int) {
     ChooseGender(title = R.string.gender_title),
     ChooseHeight(title = R.string.height_title),
     ChooseWeight(title = R.string.weight_title),
-    Summary(title = R.string.summary_title)
+    Result(title = R.string.result_title)
 }
 
 /**
@@ -68,8 +72,13 @@ fun BMICalculatorApp(
     navController: NavHostController = rememberNavController()
 ) {
     var selectedGender by rememberSaveable { mutableStateOf(-1) }
-    var sliderHeight by rememberSaveable { mutableStateOf(0.3f) }
-    var sliderWeight by rememberSaveable { mutableStateOf(0.3f) }
+    var sliderHeight by rememberSaveable { mutableStateOf(DEFAULT_HEIGHT_SLIDER_POSITION) }
+    var sliderWeight by rememberSaveable { mutableStateOf(DEFAULT_HEIGHT_SLIDER_POSITION) }
+    var height by rememberSaveable { mutableStateOf(0f) }
+    var weight by rememberSaveable { mutableStateOf(0f) }
+
+    val sliderHeightValues = generateSpinnerValues(130, 200)
+    val sliderWeightValues = generateSpinnerValues(40, 200)
 
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -116,9 +125,12 @@ fun BMICalculatorApp(
                     modifier = Modifier
                         .padding(24.dp)
                         .fillMaxHeight(),
-                    sliderValues = generateSpinnerValues(130, 200),
+                    sliderValues = sliderHeightValues,
                     sliderPosition = sliderHeight,
-                    onSliderValueChange = { sliderHeight = it }
+                    onSliderValueChange = {
+                        sliderHeight = it
+                        height = ((it * sliderHeightValues.size) + sliderHeightValues.first()) / 100
+                    }
                 )
             }
 
@@ -126,14 +138,28 @@ fun BMICalculatorApp(
                 ChooseWeightScreen(
                     selectedGender = selectedGender,
                     onNextButtonClicked = {
-                        //navController.navigate(BMICalculatorScreen.Summary.name)
+                        navController.navigate(BMICalculatorScreen.Result.name)
                     },
                     modifier = Modifier
                         .padding(24.dp)
                         .fillMaxHeight(),
-                    sliderValues = generateSpinnerValues(130, 200),
+                    sliderValues = sliderWeightValues,
                     sliderPosition = sliderWeight,
-                    onSliderValueChange = { sliderWeight = it }
+                    onSliderValueChange = {
+                        sliderWeight = it
+                        weight = (it * sliderWeightValues.size) + sliderWeightValues.first()
+                    }
+                )
+            }
+
+            composable(route = BMICalculatorScreen.Result.name) {
+                ResultScreen(
+                    selectedGender = selectedGender,
+                    height = height,
+                    weight = weight,
+                    modifier = Modifier
+                        .padding(24.dp)
+                        .fillMaxHeight(),
                 )
             }
         }

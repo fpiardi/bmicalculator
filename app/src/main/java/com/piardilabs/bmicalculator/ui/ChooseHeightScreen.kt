@@ -64,6 +64,7 @@ fun ChooseHeightScreen(
     modifier: Modifier = Modifier,
     onSliderValueChange: (Float) -> Unit
 ) {
+    val alreadyChangeSlide = (sliderPosition != DEFAULT_HEIGHT_SLIDER_POSITION)
 
     Column(
         modifier = modifier,
@@ -88,7 +89,7 @@ fun ChooseHeightScreen(
                     contentScale = ContentScale.FillHeight,
                     modifier = Modifier
                         .fillMaxWidth(1f)
-                        .fillMaxHeight(0.7f)
+                        .fillMaxHeight(0.75f)
                 )
                 Column(
                     modifier = Modifier
@@ -105,7 +106,7 @@ fun ChooseHeightScreen(
         }
 
         Button(
-            enabled = true, // selectedGender >= 0,
+            enabled = alreadyChangeSlide,
             onClick = { onNextButtonClicked() }
         ) {
             Text(
