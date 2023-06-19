@@ -1,7 +1,8 @@
 # bmicalculator
 
 Body Mass Index (BMI) Calculator.
-The project is creating using Jetpack Compose.
+The project was created using Jetpack Compose.
+ - Navigation [https://developer.android.com/jetpack/compose/navigation]
  - Slider [https://m2.material.io/components/sliders/android#using-sliders ] to define height and weight 
  - Pager [https://developer.android.com/jetpack/compose/layouts/pager ] in the result view.
 
@@ -18,6 +19,11 @@ The project is creating using Jetpack Compose.
 
 - Body mass index (BMI) [https://www.nhsinform.scot/healthy-living/food-and-nutrition/healthy-eating-and-weight-loss/body-mass-index-bmi]
 - Why BMI is inaccurate and misleading [https://www.medicalnewstoday.com/articles/265215]
+- Use Play Console free machine translation service [https://play.google.com/console/developers/app/app-translation-embed]
+
+### :books: Best Android Gists
+- Best Android Gists [https://github.com/lopspower/BestAndroidGists]
+
 
 ## License
 

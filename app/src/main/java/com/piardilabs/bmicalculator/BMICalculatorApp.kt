@@ -107,7 +107,6 @@ fun BMICalculatorApp(
                     selectedGender = selectedGender,
                     onGenderSelected = { selectedGender = it },
                     onNextButtonClicked = {
-                        //viewModel.setQuantity(it)
                         navController.navigate(BMICalculatorScreen.ChooseHeight.name)
                     },
                     modifier = Modifier
