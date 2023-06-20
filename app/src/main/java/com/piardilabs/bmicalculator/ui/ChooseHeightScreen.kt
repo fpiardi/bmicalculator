@@ -1,6 +1,7 @@
 package com.piardilabs.bmicalculator.ui
 
 import android.content.res.Configuration
+import android.graphics.Color.toArgb
 import android.text.TextPaint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -12,10 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
@@ -191,9 +189,11 @@ private fun HorizontalLinesAsRuler(values: List<Int>) {
             .padding(end = 32.dp)
             .width(32.dp)
     ) {
+        val color = MaterialTheme.colorScheme.secondary
         val drawPadding: Float = with(LocalDensity.current) { 6.dp.toPx() }
         val textPaint = TextPaint()
         textPaint.textSize = MaterialTheme.typography.titleLarge.fontSize.value
+        textPaint.color = color.toArgb()
 
         Canvas(modifier = Modifier.fillMaxSize()) {
             val xStart = 12f
@@ -202,13 +202,13 @@ private fun HorizontalLinesAsRuler(values: List<Int>) {
             values.forEachIndexed { index, _ ->
                 if (index.rem(10) == 0) {
                     drawLine(
-                        color = Color.LightGray,
+                        color = color,
                         start = Offset(x = xStart, y =index.times(distance)),
                         end = Offset(x = (size.width * 1.65).toFloat(), y = index.times(distance))
                     )
                 } else if (index.rem(2) == 0) {
                     drawLine(
-                        color = Color.LightGray,
+                        color = color,
                         start = Offset(x = xStart, y = index.times(distance)),
                         end = Offset(x = xEnd, y = index.times(distance))
                     )

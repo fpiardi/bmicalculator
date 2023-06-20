@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -150,9 +151,11 @@ private fun VerticalLinesAsRuler(values: List<Int>) {
             .fillMaxWidth()
             .height(32.dp)
     ) {
+        val color = MaterialTheme.colorScheme.secondary
         val drawPadding: Float = with(LocalDensity.current) { 6.dp.toPx() }
         val textPaint = TextPaint()
         textPaint.textSize = MaterialTheme.typography.titleLarge.fontSize.value
+        textPaint.color = color.toArgb()
 
         Canvas(modifier = Modifier.fillMaxSize()) {
             val yStart = 0f
@@ -161,7 +164,7 @@ private fun VerticalLinesAsRuler(values: List<Int>) {
             values.forEachIndexed { index, _ ->
                 if (index.rem(10) == 0) {
                     drawLine(
-                        color = Color.DarkGray,
+                        color = color,
                         start = Offset(x = index.times(distance), y = yStart),
                         end = Offset(
                             x = index.times(distance),
@@ -170,7 +173,7 @@ private fun VerticalLinesAsRuler(values: List<Int>) {
                     )
                 } else if (index.rem(2) == 0) {
                     drawLine(
-                        color = Color.Gray,
+                        color = color,
                         start = Offset(x = index.times(distance), y = yStart),
                         end = Offset(x = index.times(distance), y = yEnd)
                     )
