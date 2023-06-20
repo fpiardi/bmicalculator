@@ -7,9 +7,20 @@ The project was created using Jetpack Compose.
  - [Google Play Instant](https://developer.android.com/topic/google-play-instant/overview)
 
 ## Screenshots
-|:--------------------------------------:|:--------------------------------------:|:--------------------------------------:|:---------------------------------------:|
-| <img src="docs/light/BMI_gender.png"/> | <img src="docs/light/BMI_height.png"/> | <img src="docs/light/BMI_weight.png"/> | <img src="docs/light/BMI_results.png"/> |
-| <img src="docs/dark/BMI_gender.png"/>  | <img src="docs/dark/BMI_height.png"/>  | <img src="docs/dark/BMI_weight.png"/>  | <img src="docs/dark/BMI_results.png"/>  |
+<table width="100%">
+    <tr>
+        <td width="25%"><img src="docs/light/BMI_gender.png"/></td>
+        <td width="25%"><img src="docs/light/BMI_height.png"/></td>
+        <td width="25%"><img src="docs/light/BMI_weight.png"/></td>
+        <td width="25%"><img src="docs/light/BMI_results.png"/></td>
+    </tr>
+    <tr>
+        <td width="25%"><img src="docs/dark/BMI_gender.png"/></td>
+        <td width="25%"><img src="docs/dark/BMI_height.png"/></td>
+        <td width="25%"><img src="docs/dark/BMI_weight.png"/></td>
+        <td width="25%"><img src="docs/dark/BMI_results.png"/></td>
+    </tr>
+</table>
 
 ## Useful links
 ### CodeLabs
