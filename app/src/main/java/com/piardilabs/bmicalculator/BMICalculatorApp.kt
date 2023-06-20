@@ -108,7 +108,7 @@ fun BMICalculatorApp(
             composable(
                 route = BMICalculatorScreen.ChooseGender.name,
                 exitTransition = {
-                    fadeOut(animationSpec = tween(1000))
+                    fadeOut(animationSpec = tween(500))
                 }
             ) {
                 ChooseGenderScreen(
@@ -126,10 +126,10 @@ fun BMICalculatorApp(
             composable(
                 route = BMICalculatorScreen.ChooseHeight.name,
                 enterTransition = {
-                    slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(1000) )
+                    slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500) )
                 },
                 exitTransition = {
-                    slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(1000))
+                    slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
                 }
             ) {
                 ChooseHeightScreen(
@@ -152,10 +152,10 @@ fun BMICalculatorApp(
             composable(
                 route = BMICalculatorScreen.ChooseWeight.name,
                 enterTransition = {
-                    fadeIn(animationSpec = tween(1000))
+                    fadeIn(animationSpec = tween(500))
                 },
                 exitTransition = {
-                    fadeOut(animationSpec = tween(1000))
+                    fadeOut(animationSpec = tween(500))
                 }
             ) {
                 ChooseWeightScreen(
@@ -178,10 +178,10 @@ fun BMICalculatorApp(
             composable(
                 route = BMICalculatorScreen.Result.name,
                 enterTransition = {
-                    fadeIn(animationSpec = tween(1000))
+                    fadeIn(animationSpec = tween(500))
                 },
                 exitTransition = {
-                    fadeOut(animationSpec = tween(1000))
+                    fadeOut(animationSpec = tween(500))
                 }
             ) {
                 ResultScreen(

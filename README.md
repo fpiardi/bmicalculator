@@ -4,7 +4,7 @@ The project was created using Jetpack Compose.
  - Navigation [https://developer.android.com/jetpack/compose/navigation]
  - Slider [https://m2.material.io/components/sliders/android#using-sliders ] to define height and weight 
  - Pager [https://developer.android.com/jetpack/compose/layouts/pager ] in the result view.
-
+ - Google Play Instant [https://developer.android.com/topic/google-play-instant/overview]
 ## Screenshots
 
 ## Useful links
