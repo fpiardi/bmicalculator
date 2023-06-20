@@ -79,41 +79,8 @@ fun FillMetrics(sliderValues: List<Int>, sliderPosition: Float, measure: Measure
 fun customSliderColors(): SliderColors = SliderDefaults.colors(
     activeTickColor = Color.Transparent,
     inactiveTickColor = Color.Transparent,
-    inactiveTrackColor = Color.LightGray,
-    activeTrackColor = Color.LightGray,
-    thumbColor = Color.Green,
+    inactiveTrackColor = Color.Transparent,
+    activeTrackColor = Color.Transparent,
+    thumbColor = MaterialTheme.colorScheme.primary,
 )
 
-@Composable
-fun MessageCard() {
-    Row(modifier = Modifier.padding(all = 8.dp)) {
-        Image(
-            painter = painterResource(R.drawable.female_selected),
-            contentDescription = null,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                .background(Color.Green)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Column {
-            Text(
-                text = "Author",
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Surface(shadowElevation = 1.dp) {
-                Text(
-                    text = "Body",
-                    modifier = Modifier.padding(all = 4.dp),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
-    }
-}

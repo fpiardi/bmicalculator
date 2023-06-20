@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.text.TextPaint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -34,7 +36,7 @@ import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
 @Composable
 fun VerticalSliderPreview() {
     BMICalculatorTheme {
-        VerticalSlider(values = generateSpinnerValues(130, 200), 0.3f) {}
+        VerticalRulerWithSlider(values = generateSpinnerValues(130, 200), 0.3f) {}
     }
 }
 
@@ -79,7 +81,7 @@ fun ChooseHeightScreen(
         )
         FillMetrics(sliderValues, sliderPosition, Measure.HEIGHT)
 
-        Column(modifier = Modifier.fillMaxHeight(0.9f)) {
+        Column(modifier = Modifier.fillMaxHeight(0.80f)) {
             Box {
                 Image(
                     painter = if (selectedGender == 0) painterResource(R.drawable.male_selected) else painterResource(
@@ -88,15 +90,15 @@ fun ChooseHeightScreen(
                     contentDescription = "",
                     contentScale = ContentScale.FillHeight,
                     modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .fillMaxHeight(0.75f)
+                        .fillMaxWidth(0.90f)
+                        .fillMaxHeight(0.70f)
                 )
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(1f)
                         .fillMaxHeight(0.7f)
                 ) {
-                    VerticalSlider(
+                    VerticalRulerWithSlider(
                         values = sliderValues,
                         sliderPosition = sliderPosition,
                         onSliderValueChange = onSliderValueChange
@@ -122,7 +124,7 @@ fun ChooseHeightScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun VerticalSlider(
+private fun VerticalRulerWithSlider(
     values: List<Int>,
     sliderPosition: Float = 0f,
     onSliderValueChange: (Float) -> Unit
@@ -130,11 +132,10 @@ private fun VerticalSlider(
     Box(
         contentAlignment = Alignment.CenterEnd,
         modifier = Modifier
-            //.background(Color.Yellow)
             .fillMaxHeight(1f)
-            .fillMaxWidth(1f)
+            .fillMaxWidth(0.95f)
     ) {
-        HorizontalLines(values.reversed())
+        HorizontalLinesAsRuler(values.reversed())
 
         Column(
             modifier = Modifier
@@ -146,8 +147,8 @@ private fun VerticalSlider(
                 thumb = {
                     SliderDefaults.Thumb(
                         interactionSource = MutableInteractionSource(),
-                        modifier = Modifier.offset(x = 5.dp),
-                        thumbSize = DpSize(8.dp, 40.dp),
+                        modifier = Modifier.offset(y = 0.dp),
+                        thumbSize = DpSize(8.dp, 48.dp),
                         colors = customSliderColors()
                     )
                 },
@@ -182,34 +183,41 @@ private fun VerticalSlider(
 }
 
 @Composable
-private fun HorizontalLines(values: List<Int>) {
+private fun HorizontalLinesAsRuler(values: List<Int>) {
     Box(
         modifier = Modifier
-            .fillMaxHeight(1f)
-            //.background(Color.Cyan)
-            .padding(horizontal = 24.dp)
-            .width(24.dp)
+            .fillMaxHeight()
+            //.background(colorResource(R.color.blue))
+            .padding(end = 32.dp)
+            .width(32.dp)
     ) {
-        val drawPadding: Float = with(LocalDensity.current) { 5.dp.toPx() }
+        val drawPadding: Float = with(LocalDensity.current) { 6.dp.toPx() }
         val textPaint = TextPaint()
         textPaint.textSize = MaterialTheme.typography.titleLarge.fontSize.value
 
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val xStart = 0f
+            val xStart = 12f
             val xEnd = size.width
-            val distance: Float = (size.height.minus(1f * drawPadding)).div(values.size.minus(1))
+            val distance: Float = size.height.div(values.size)
             values.forEachIndexed { index, _ ->
-                if (index.rem(5) == 0) {
+                if (index.rem(10) == 0) {
                     drawLine(
                         color = Color.LightGray,
-                        start = Offset(x = xStart, y = drawPadding + index.times(distance)),
-                        end = Offset(x = xEnd, y = drawPadding + index.times(distance))
+                        start = Offset(x = xStart, y =index.times(distance)),
+                        end = Offset(x = (size.width * 1.65).toFloat(), y = index.times(distance))
+                    )
+                } else if (index.rem(2) == 0) {
+                    drawLine(
+                        color = Color.LightGray,
+                        start = Offset(x = xStart, y = index.times(distance)),
+                        end = Offset(x = xEnd, y = index.times(distance))
                     )
                 }
-                if (index.rem(10) == 0) {
+
+                if (index.rem(20) == 0) {
                     this.drawContext.canvas.nativeCanvas.drawText(
                         values[index].toString(), // text to be drawn
-                        (size.width * 1.15).toFloat(), // x position
+                        (size.width * 1.75).toFloat(), // x position
                         drawPadding + index.times(distance), // y position
                         textPaint // color, thickness, fontSize, etc
                     )

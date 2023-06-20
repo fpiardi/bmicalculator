@@ -6,6 +6,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,8 +20,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
@@ -32,7 +33,7 @@ import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
 @Composable
 fun HorizontalSliderPreview() {
     BMICalculatorTheme {
-        HorizontalSlider(values = generateSpinnerValues(40, 160), 0.3f) {}
+        HorizontalRulerWithSlider(values = generateSpinnerValues(40, 160), 0.3f) {}
     }
 }
 
@@ -77,7 +78,7 @@ fun ChooseWeightScreen(
         )
         FillMetrics(sliderValues, sliderPosition, Measure.WEIGHT)
 
-        Column(modifier = Modifier.fillMaxHeight(0.9f)) {
+        Column(modifier = Modifier.fillMaxHeight(0.80f)) {
             Image(
                 painter = if (selectedGender == 0) painterResource(R.drawable.male_selected) else painterResource(
                     R.drawable.female_selected
@@ -85,14 +86,19 @@ fun ChooseWeightScreen(
                 contentDescription = "",
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .fillMaxHeight(0.75f)
+                    .fillMaxWidth(0.90f)
+                    .fillMaxHeight(0.70f)
             )
-            HorizontalSlider(
+            HorizontalRulerWithSlider(
                 values = sliderValues,
                 sliderPosition = sliderPosition,
                 onSliderValueChange = onSliderValueChange
             )
+//            HorizontalRulerWithLazyRow(
+//                values = sliderValues,
+//                sliderPosition = sliderPosition,
+//                onSliderValueChange = onSliderValueChange
+//            )
         }
 
         Button(
@@ -112,24 +118,23 @@ fun ChooseWeightScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HorizontalSlider(
+private fun HorizontalRulerWithSlider(
     values: List<Int>,
     sliderPosition: Float = 0f,
     onSliderValueChange: (Float) -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
-        VerticalLines(values)
+        VerticalLinesAsRuler(values)
         Slider(
             thumb = {
                 SliderDefaults.Thumb(
                     interactionSource = MutableInteractionSource(),
-                    modifier = Modifier.offset(x = 5.dp),
-                    thumbSize = DpSize(8.dp, 40.dp),
+                    modifier = Modifier.offset(y = 8.dp),
+                    thumbSize = DpSize(8.dp, 48.dp),
                     colors = customSliderColors()
                 )
             },
             modifier = Modifier
-                .semantics { contentDescription = "Localized Description" }
                 .fillMaxWidth(),
             colors = customSliderColors(),
             value = sliderPosition,
@@ -139,37 +144,123 @@ private fun HorizontalSlider(
 }
 
 @Composable
-private fun VerticalLines(values: List<Int>) {
+private fun VerticalLinesAsRuler(values: List<Int>) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(24.dp)
+            .height(32.dp)
     ) {
-        val drawPadding: Float = with(LocalDensity.current) { 5.dp.toPx() }
+        val drawPadding: Float = with(LocalDensity.current) { 6.dp.toPx() }
         val textPaint = TextPaint()
         textPaint.textSize = MaterialTheme.typography.titleLarge.fontSize.value
 
         Canvas(modifier = Modifier.fillMaxSize()) {
             val yStart = 0f
             val yEnd = size.height
-            val distance: Float = (size.width.minus(1.9f * drawPadding)).div(values.size.minus(1))
+            val distance: Float = size.width.div(values.size)
             values.forEachIndexed { index, _ ->
-                if (index.rem(5) == 0) {
+                if (index.rem(10) == 0) {
                     drawLine(
-                        color = Color.LightGray,
-                        start = Offset(x = drawPadding + index.times(distance), y = yStart),
-                        end = Offset(x = drawPadding + index.times(distance), y = yEnd)
+                        color = Color.DarkGray,
+                        start = Offset(x = index.times(distance), y = yStart),
+                        end = Offset(
+                            x = index.times(distance),
+                            y = (size.height * 1.45).toFloat()
+                        )
+                    )
+                } else if (index.rem(2) == 0) {
+                    drawLine(
+                        color = Color.Gray,
+                        start = Offset(x = index.times(distance), y = yStart),
+                        end = Offset(x = index.times(distance), y = yEnd)
                     )
                 }
+
                 if (index.rem(20) == 0) {
                     this.drawContext.canvas.nativeCanvas.drawText(
                         values[index].toString(), // text to be drawn
-                        drawPadding + index.times(distance), // x position
+                        (index.times(distance) - drawPadding), // x position
                         (size.height * 1.9).toFloat(), // y position
                         textPaint // color, thickness, fontSize, etc
                     )
                 }
             }
         }
+    }
+}
+
+/**
+ * This function will create a ruler that will scroll, and not the slider that will scroll
+ */
+@Composable
+fun HorizontalRulerWithLazyRow(
+    values: List<Int>,
+    sliderPosition: Float = 0f,
+    onSliderValueChange: (Float) -> Unit
+) {
+
+    Box(
+        modifier = Modifier
+            .height(32.dp)
+    ) {
+
+        val state = rememberLazyListState()
+
+        LazyRow(horizontalArrangement = Arrangement.SpaceBetween) {
+            itemsIndexed(values) { index, item ->
+                val drawPadding: Float = with(LocalDensity.current) { 6.dp.toPx() }
+                val textPaint = TextPaint()
+                textPaint.textSize = MaterialTheme.typography.titleLarge.fontSize.value
+
+                val layoutInfo = state.layoutInfo
+                val visibleItemsInfo = layoutInfo.visibleItemsInfo
+                val itemInfo = visibleItemsInfo.firstOrNull { it.index == index}
+
+                itemInfo?.let {
+                    val delta = it.size / 2
+                    val center = state.layoutInfo.viewportEndOffset / 2
+                    val childCenter = it.offset + it.size / 2
+                    val target = childCenter - center
+                    if (target in -delta..delta) {
+                        onSliderValueChange(item.toFloat())
+                    }
+                }
+
+                Text(" ")
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val yStart = 0f
+                    val yEnd = size.height
+                    val distance: Float = (size.width).div(values.size)
+
+                    if (item.rem(5) == 0) {
+                        drawLine(
+                            color = Color.DarkGray,
+                            start = Offset(x = item.times(distance), y = yStart),
+                            end = Offset(
+                                x = item.times(distance),
+                                y = (size.height * 1.45).toFloat()
+                            )
+                        )
+                    } else if (item.rem(1) == 0) {
+                        drawLine(
+                            color = Color.Gray,
+                            start = Offset(x = item.times(distance), y = yStart),
+                            end = Offset(x = item.times(distance), y = yEnd)
+                        )
+                    }
+
+                    if (item.rem(10) == 0) {
+                        this.drawContext.canvas.nativeCanvas.drawText(
+                            (item).toString(), // text to be drawn
+                            (item.times(distance) - drawPadding), // x position
+                            (size.height * 1.9).toFloat(), // y position
+                            textPaint // color, thickness, fontSize, etc
+                        )
+                    }
+                }
+            }
+        }
+
+
     }
 }

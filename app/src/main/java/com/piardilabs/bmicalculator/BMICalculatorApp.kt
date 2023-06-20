@@ -1,6 +1,8 @@
 package com.piardilabs.bmicalculator
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,17 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.piardilabs.bmicalculator.ui.ChooseGenderScreen
 import com.piardilabs.bmicalculator.ui.ChooseHeightScreen
 import com.piardilabs.bmicalculator.ui.ChooseWeightScreen
 import com.piardilabs.bmicalculator.ui.ResultScreen
 
-const val DEFAULT_HEIGHT_SLIDER_POSITION = 0.3f
-const val DEFAULT_WEIGHT_SLIDER_POSITION = 0.3f
+const val DEFAULT_HEIGHT_SLIDER_POSITION = 0.50f
+const val DEFAULT_WEIGHT_SLIDER_POSITION = 0.15f
 
 /**
  * enum values that represent the screens in the app
@@ -67,17 +69,18 @@ fun BMICalculatorAppBar(
     )
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun BMICalculatorApp(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberAnimatedNavController() //rememberNavController()
 ) {
     var selectedGender by rememberSaveable { mutableStateOf(-1) }
     var sliderHeight by rememberSaveable { mutableStateOf(DEFAULT_HEIGHT_SLIDER_POSITION) }
-    var sliderWeight by rememberSaveable { mutableStateOf(DEFAULT_HEIGHT_SLIDER_POSITION) }
+    var sliderWeight by rememberSaveable { mutableStateOf(DEFAULT_WEIGHT_SLIDER_POSITION) }
     var height by rememberSaveable { mutableStateOf(0f) }
     var weight by rememberSaveable { mutableStateOf(0f) }
 
-    val sliderHeightValues = generateSpinnerValues(130, 200)
+    val sliderHeightValues = generateSpinnerValues(100, 220)
     val sliderWeightValues = generateSpinnerValues(40, 200)
 
     // Get current back stack entry
@@ -97,12 +100,17 @@ fun BMICalculatorApp(
         }
     ) { innerPadding ->
 
-        NavHost(
+        AnimatedNavHost(
             navController = navController,
             startDestination = BMICalculatorScreen.ChooseGender.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(route = BMICalculatorScreen.ChooseGender.name) {
+            composable(
+                route = BMICalculatorScreen.ChooseGender.name,
+                exitTransition = {
+                    fadeOut(animationSpec = tween(1000))
+                }
+            ) {
                 ChooseGenderScreen(
                     selectedGender = selectedGender,
                     onGenderSelected = { selectedGender = it },
@@ -110,19 +118,27 @@ fun BMICalculatorApp(
                         navController.navigate(BMICalculatorScreen.ChooseHeight.name)
                     },
                     modifier = Modifier
-                        .padding(24.dp)
+                        .padding(20.dp)
                         .fillMaxHeight()
                 )
             }
 
-            composable(route = BMICalculatorScreen.ChooseHeight.name) {
+            composable(
+                route = BMICalculatorScreen.ChooseHeight.name,
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(1000) )
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(1000))
+                }
+            ) {
                 ChooseHeightScreen(
                     selectedGender = selectedGender,
                     onNextButtonClicked = {
                         navController.navigate(BMICalculatorScreen.ChooseWeight.name)
                     },
                     modifier = Modifier
-                        .padding(24.dp)
+                        .padding(20.dp)
                         .fillMaxHeight(),
                     sliderValues = sliderHeightValues,
                     sliderPosition = sliderHeight,
@@ -133,14 +149,22 @@ fun BMICalculatorApp(
                 )
             }
 
-            composable(route = BMICalculatorScreen.ChooseWeight.name) {
+            composable(
+                route = BMICalculatorScreen.ChooseWeight.name,
+                enterTransition = {
+                    fadeIn(animationSpec = tween(1000))
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(1000))
+                }
+            ) {
                 ChooseWeightScreen(
                     selectedGender = selectedGender,
                     onNextButtonClicked = {
                         navController.navigate(BMICalculatorScreen.Result.name)
                     },
                     modifier = Modifier
-                        .padding(24.dp)
+                        .padding(20.dp)
                         .fillMaxHeight(),
                     sliderValues = sliderWeightValues,
                     sliderPosition = sliderWeight,
@@ -151,13 +175,21 @@ fun BMICalculatorApp(
                 )
             }
 
-            composable(route = BMICalculatorScreen.Result.name) {
+            composable(
+                route = BMICalculatorScreen.Result.name,
+                enterTransition = {
+                    fadeIn(animationSpec = tween(1000))
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(1000))
+                }
+            ) {
                 ResultScreen(
                     selectedGender = selectedGender,
                     height = height,
                     weight = weight,
                     modifier = Modifier
-                        .padding(24.dp)
+                        .padding(20.dp)
                         .fillMaxHeight(),
                 )
             }

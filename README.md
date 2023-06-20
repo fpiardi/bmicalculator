@@ -1,5 +1,4 @@
 # bmicalculator
-
 Body Mass Index (BMI) Calculator.
 The project was created using Jetpack Compose.
  - Navigation [https://developer.android.com/jetpack/compose/navigation]
@@ -16,6 +15,8 @@ The project was created using Jetpack Compose.
 ### Other links or examples
 - Get free images [https://www.freepik.com/search?format=search&last_filter=ai&last_value=only&query=avatar%20body&selection=1&type=photo]
 - Customizing the slider [https://piotrprus.medium.com/custom-slider-in-jetpack-compose-43ed08e2c338]
+- Animations in Navigation Compose [https://medium.com/androiddevelopers/animations-in-navigation-compose-36d48870776b]
+- Youtube video about 5 quick animation to make in your compose app [https://www.youtube.com/watch?v=0mfCbXrYBPE]
 
 - Body mass index (BMI) [https://www.nhsinform.scot/healthy-living/food-and-nutrition/healthy-eating-and-weight-loss/body-mass-index-bmi]
 - Why BMI is inaccurate and misleading [https://www.medicalnewstoday.com/articles/265215]

@@ -3,20 +3,19 @@ package com.piardilabs.bmicalculator.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,7 +70,10 @@ fun ChooseGenderScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.55f)
                     .fillMaxHeight(0.7f)
-                    .clickable {
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
                         selectedGender = 0
                         onGenderSelected(selectedGender)
                     }
@@ -85,7 +87,10 @@ fun ChooseGenderScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .fillMaxHeight(0.7f)
-                    .clickable {
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
                         selectedGender = 1
                         onGenderSelected(selectedGender)
                     }
@@ -94,13 +99,31 @@ fun ChooseGenderScreen(
 
         Row() {
             Text(
-                text = stringResource(R.string.gender_male), Modifier.weight(0.5f),
+                text = AnnotatedString(stringResource(R.string.gender_male)),
+                modifier = Modifier
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        selectedGender = 0
+                        onGenderSelected(selectedGender)
+                    }
+                    .weight(0.5f),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
                 style = if (selectedGender == 0) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall
             )
             Text(
-                text = stringResource(R.string.gender_female), Modifier.weight(0.5f),
+                text = AnnotatedString(stringResource(R.string.gender_female)),
+                modifier = Modifier
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        selectedGender = 1
+                        onGenderSelected(selectedGender)
+                    }
+                    .weight(0.5f),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
                 style = if (selectedGender == 1) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall
