@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Calculadora IMC</string>
+    <string name="gender_title">Gênero</string>
+    <string name="gender_description">Por favor, escolha o seu sexo para cálculos precisos</string>
+    <string name="gender_male">Masculino</string>
+    <string name="gender_female">Feminino</string>
+    <string name="height_title">Altura</string>
+    <string name="height_description">Escolha sua altura usando a régua à direita</string>
+    <string name="weight_title">Peso</string>
+    <string name="weight_description">Escolha o seu peso usando a régua na parte inferior</string>
+    <string name="measure_height">cm</string>
+    <string name="measure_weight">kg</string>
+    <string name="text_next">Próximo</string>
+    <string name="text_back">Voltar</string>
+    <string name="result_title">Resultdo</string>
+    <string name="result_bmi">Seu IMC é %s</string>
+    <string name="disclaimer">Lembre-se: o IMC é útil para prever seu peso ideal e saudável, mas não deve ser totalmente preciso, pois não leva em consideração sua composição corporal geral. Portanto, use o IMC como uma ferramenta, mas não confie totalmente nele.</string>
+
+    <string-array name="results_text">
+        <item>Abaixo do peso</item>
+        <item>Normal</item>
+        <item>Sobrepeso</item>
+        <item>Obesidade</item>
+        <item>Obesidade Extrema</item>
+    </string-array>
+
+    <string-array name="results_index">
+        <item>menor que 18.5</item>
+        <item>18.5 - 24.9</item>
+        <item>25 - 29.9</item>
+        <item>30 - 34.9</item>
+        <item>maior que 35</item>
+    </string-array>
+</resources>
