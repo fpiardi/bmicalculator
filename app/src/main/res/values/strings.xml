@@ -10,6 +10,7 @@
     <string name="weight_description">Choose your weight using the ruler on the bottom</string>
     <string name="measure_height">cm</string>
     <string name="measure_weight">kg</string>
+    <string name="text_ruler">ruler</string>
     <string name="text_next">Next</string>
     <string name="text_back">Back</string>
     <string name="result_title">Result</string>

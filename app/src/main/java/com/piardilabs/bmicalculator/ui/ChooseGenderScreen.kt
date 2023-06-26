@@ -65,7 +65,7 @@ fun ChooseGenderScreen(
                 painter = if (selectedGender == 0) painterResource(R.drawable.male_selected) else painterResource(
                     R.drawable.male_unselected
                 ),
-                contentDescription = "",
+                contentDescription = stringResource(R.string.gender_male),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth(0.55f)
@@ -82,7 +82,7 @@ fun ChooseGenderScreen(
                 painter = if (selectedGender == 1) painterResource(R.drawable.female_selected) else painterResource(
                     R.drawable.female_unselected
                 ),
-                contentDescription = "",
+                contentDescription = stringResource(R.string.gender_female),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth(0.9f)

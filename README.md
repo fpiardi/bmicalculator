@@ -28,12 +28,18 @@ The project was created using Jetpack Compose.
 - [Navigate between screens with Compose](https://developer.android.com/codelabs/basic-android-kotlin-compose-navigation)
 - [Basic Layouts in Compose](https://developer.android.com/codelabs/jetpack-compose-layouts)
 - [State in Jetpack Compose](https://developer.android.com/codelabs/jetpack-compose-state)
+- [Theming in Compose with Material 3](https://developer.android.com/codelabs/jetpack-compose-theming)
 - [Migrating to Jetpack Compose](https://developer.android.com/codelabs/jetpack-compose-migration)
 
 ### Android Developers Youtube Videos
 - [Accelerate with tooling](https://youtu.be/8XJfLaAOxD0)
 - [5 quick animation to make in your compose app](https://www.youtube.com/watch?v=0mfCbXrYBPE)
 - [Migrate from View System to Compose](https://youtu.be/y10I6Suhvtc)
+
+### Docs
+- [Jetpack Compose for Android Developers](https://developer.android.com/courses/jetpack-compose/course)
+- [Accessibility in Compose](https://developer.android.com/jetpack/compose/accessibility)
+- [Semantics and TalkBack with Jetpack Compose](https://bryanherbst.com/2020/11/03/compose-semantics-talkback/)
 
 ### Other links or examples
 - [Get free images](https://www.freepik.com/search?format=search&last_filter=ai&last_value=only&query=avatar%20body&selection=1&type=photo)

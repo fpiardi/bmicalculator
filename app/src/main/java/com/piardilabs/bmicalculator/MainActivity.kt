@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
 
@@ -45,7 +46,7 @@ fun generateSpinnerValues(minimalValue: Int, maximumValue: Int): List<Int> {
 
 @Composable
 fun TitleAndDescription(title: String, description: String) {
-    Column() {
+    Column(Modifier.semantics(mergeDescendants = true) {}) {
         Text(
             text = title,
             color = MaterialTheme.colorScheme.secondary,

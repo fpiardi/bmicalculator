@@ -20,6 +20,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.*
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.piardilabs.bmicalculator.*
 import com.piardilabs.bmicalculator.R
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
+import kotlin.math.roundToInt
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -85,10 +88,10 @@ fun ChooseHeightScreen(
                     painter = if (selectedGender == 0) painterResource(R.drawable.male_selected) else painterResource(
                         R.drawable.female_selected
                     ),
-                    contentDescription = "",
+                    contentDescription = null, // decorative
                     contentScale = ContentScale.FillHeight,
                     modifier = Modifier
-                        .fillMaxWidth(0.90f)
+                        .fillMaxWidth(0.80f)
                         .fillMaxHeight(0.70f)
                 )
                 Column(
@@ -133,6 +136,7 @@ private fun VerticalRulerWithSlider(
             .fillMaxHeight(1f)
             .fillMaxWidth(0.95f)
     ) {
+        val textRuler = stringResource(R.string.text_ruler)
         HorizontalLinesAsRuler(values.reversed())
 
         Column(
@@ -146,7 +150,7 @@ private fun VerticalRulerWithSlider(
                     SliderDefaults.Thumb(
                         interactionSource = MutableInteractionSource(),
                         modifier = Modifier.offset(y = 0.dp),
-                        thumbSize = DpSize(8.dp, 48.dp),
+                        thumbSize = DpSize(8.dp, 80.dp),
                         colors = customSliderColors()
                     )
                 },
@@ -168,7 +172,13 @@ private fun VerticalRulerWithSlider(
                             placeable.place(-placeable.width, 0)
                         }
                     }
-                    .padding(bottom = 12.dp)
+                    .padding(bottom = 16.dp)
+                    .semantics {
+                        stateDescription = ((sliderPosition * values.size) + values.first())
+                            .roundToInt()
+                            .toString()
+                        contentDescription = textRuler
+                    }
                     .fillMaxWidth(),
 
                 colors = customSliderColors(),
@@ -185,9 +195,8 @@ private fun HorizontalLinesAsRuler(values: List<Int>) {
     Box(
         modifier = Modifier
             .fillMaxHeight()
-            //.background(colorResource(R.color.blue))
-            .padding(end = 32.dp)
-            .width(32.dp)
+            .padding(end = 48.dp)
+            .width(48.dp)
     ) {
         val color = MaterialTheme.colorScheme.secondary
         val drawPadding: Float = with(LocalDensity.current) { 6.dp.toPx() }
@@ -203,7 +212,7 @@ private fun HorizontalLinesAsRuler(values: List<Int>) {
                 if (index.rem(10) == 0) {
                     drawLine(
                         color = color,
-                        start = Offset(x = xStart, y =index.times(distance)),
+                        start = Offset(x = xStart, y = index.times(distance)),
                         end = Offset(x = (size.width * 1.65).toFloat(), y = index.times(distance))
                     )
                 } else if (index.rem(2) == 0) {

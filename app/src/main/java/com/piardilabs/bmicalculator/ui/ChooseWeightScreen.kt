@@ -21,6 +21,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
@@ -28,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.piardilabs.bmicalculator.*
 import com.piardilabs.bmicalculator.R
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
+import kotlin.math.roundToInt
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -84,10 +88,10 @@ fun ChooseWeightScreen(
                 painter = if (selectedGender == 0) painterResource(R.drawable.male_selected) else painterResource(
                     R.drawable.female_selected
                 ),
-                contentDescription = "",
+                contentDescription = null, // decorative
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier
-                    .fillMaxWidth(0.90f)
+                    .fillMaxWidth(0.80f)
                     .fillMaxHeight(0.70f)
             )
             HorizontalRulerWithSlider(
@@ -125,18 +129,26 @@ private fun HorizontalRulerWithSlider(
     onSliderValueChange: (Float) -> Unit
 ) {
     Box(contentAlignment = Alignment.Center) {
+        val textRuler = stringResource(R.string.text_ruler)
+
         VerticalLinesAsRuler(values)
         Slider(
             thumb = {
                 SliderDefaults.Thumb(
                     interactionSource = MutableInteractionSource(),
                     modifier = Modifier.offset(y = 8.dp),
-                    thumbSize = DpSize(8.dp, 48.dp),
+                    thumbSize = DpSize(8.dp, 80.dp),
                     colors = customSliderColors()
                 )
             },
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .semantics {
+                    stateDescription = ((sliderPosition * values.size) + values.first())
+                        .roundToInt()
+                        .toString()
+                    contentDescription = textRuler
+                },
             colors = customSliderColors(),
             value = sliderPosition,
             onValueChange = { onSliderValueChange(it) }
@@ -149,7 +161,7 @@ private fun VerticalLinesAsRuler(values: List<Int>) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(32.dp)
+            .height(48.dp)
     ) {
         val color = MaterialTheme.colorScheme.secondary
         val drawPadding: Float = with(LocalDensity.current) { 6.dp.toPx() }
