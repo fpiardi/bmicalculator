@@ -15,6 +15,7 @@
     <string name="text_back">Atrás</string>
     <string name="result_title">Resultdo</string>
     <string name="result_bmi">Su IMC es %s</string>
+    <string name="result_bmi_detail">Peso normal para tu estatura: %s kg - %s kg</string>
     <string name="disclaimer">Recuerde: el IMC es útil para predecir su peso saludable ideal, no pretende ser del todo exacto, ya que no tiene en cuenta su composición corporal general. Así que use el BMI como una herramienta, pero no confíe en él por completo.</string>
 
     <string-array name="results_text">

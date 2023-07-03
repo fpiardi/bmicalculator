@@ -30,10 +30,12 @@ The project was created using Jetpack Compose.
 - [State in Jetpack Compose](https://developer.android.com/codelabs/jetpack-compose-state)
 - [Theming in Compose with Material 3](https://developer.android.com/codelabs/jetpack-compose-theming)
 - [Migrating to Jetpack Compose](https://developer.android.com/codelabs/jetpack-compose-migration)
+- [Animating elements in Jetpack Compose](https://developer.android.com/codelabs/jetpack-compose-animation)
 
 ### Android Developers Youtube Videos
 - [Accelerate with tooling](https://youtu.be/8XJfLaAOxD0)
 - [5 quick animation to make in your compose app](https://www.youtube.com/watch?v=0mfCbXrYBPE)
+- [Introduction to drawing in Compose](https://youtu.be/1yiuxWK74vI) with line graph example
 - [Migrate from View System to Compose](https://youtu.be/y10I6Suhvtc)
 
 ### Docs

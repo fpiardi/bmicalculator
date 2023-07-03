@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.piardilabs.bmicalculator.*
 import com.piardilabs.bmicalculator.R
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
+import com.piardilabs.bmicalculator.viewmodel.BmiViewModel
 import kotlin.math.roundToInt
 
 @Preview(showBackground = true)
@@ -38,7 +39,7 @@ import kotlin.math.roundToInt
 @Composable
 fun HorizontalSliderPreview() {
     BMICalculatorTheme {
-        HorizontalRulerWithSlider(values = generateSpinnerValues(40, 160), 0.3f) {}
+        HorizontalRulerWithSlider(values = BmiViewModel().generateSpinnerValues(40, 160), 0.3f) {}
     }
 }
 
@@ -49,7 +50,7 @@ fun ChooseWeightScreenPreview() {
     BMICalculatorTheme {
         ChooseWeightScreen(
             selectedGender = 1,
-            sliderValues = generateSpinnerValues(40, 160),
+            sliderValues = BmiViewModel().generateSpinnerValues(40, 160),
             sliderPosition = 0.17f,
             onNextButtonClicked = {},
             modifier = Modifier

@@ -26,6 +26,7 @@ import com.piardilabs.bmicalculator.ui.ChooseGenderScreen
 import com.piardilabs.bmicalculator.ui.ChooseHeightScreen
 import com.piardilabs.bmicalculator.ui.ChooseWeightScreen
 import com.piardilabs.bmicalculator.ui.ResultScreen
+import com.piardilabs.bmicalculator.viewmodel.BmiViewModel
 
 const val DEFAULT_HEIGHT_SLIDER_POSITION = 0.50f
 const val DEFAULT_WEIGHT_SLIDER_POSITION = 0.15f
@@ -73,6 +74,7 @@ fun BMICalculatorAppBar(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun BMICalculatorApp(
+    bmiViewModel: BmiViewModel,
     navController: NavHostController = rememberAnimatedNavController() //rememberNavController()
 ) {
     var selectedGender by rememberSaveable { mutableStateOf(-1) }
@@ -81,8 +83,8 @@ fun BMICalculatorApp(
     var height by rememberSaveable { mutableStateOf(0f) }
     var weight by rememberSaveable { mutableStateOf(0f) }
 
-    val sliderHeightValues = generateSpinnerValues(100, 220)
-    val sliderWeightValues = generateSpinnerValues(40, 200)
+    val sliderHeightValues = bmiViewModel.generateSpinnerValues(100, 220)
+    val sliderWeightValues = bmiViewModel.generateSpinnerValues(40, 200)
 
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -187,6 +189,7 @@ fun BMICalculatorApp(
                 }
             ) {
                 ResultScreen(
+                    bmiViewModel = bmiViewModel,
                     selectedGender = selectedGender,
                     height = height,
                     weight = weight,
