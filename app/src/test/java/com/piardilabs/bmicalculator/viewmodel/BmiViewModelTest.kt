@@ -64,6 +64,24 @@ internal class BmiViewModelTest {
     }
 
     @Test
+    fun gameViewModel_CalculateOverWeightBMIHighLimit_ReturnCorrectBMIResult() {
+        //arrange
+        val expectedResult = BmiResult(
+            bmi = 29.930101F,
+            index = 2,
+            difference = 13.286896F,
+            minNormalWeight = 49.7576F,
+            maxNormalWeight = 67.213104F
+        )
+
+        //act
+        val result = viewModel.calculateBMI(1.64F, 80.5F)
+
+        //assert
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
     fun gameViewModel_CalculateObesityBMI_ReturnCorrectBMIResult() {
         //arrange
         val expectedResult = BmiResult(

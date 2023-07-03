@@ -14,6 +14,7 @@
     <string name="text_next">Next</string>
     <string name="text_back">Back</string>
     <string name="result_title">Result</string>
+    <string name="result_normal">Great!</string>
     <string name="result_bmi">Your BMI is %s</string>
     <string name="result_bmi_detail">Normal weight for your height: %s kg - %s kg</string>
     <string name="disclaimer">Remember: BMI is useful for predicting your ideal healthy weight, it is not meant to be entirely accurate, since it does not take into consideration your overall body composition. So use BMI as a tool, but don’t rely on it entirely.</string>

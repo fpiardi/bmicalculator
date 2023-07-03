@@ -23,10 +23,10 @@ class BmiViewModel : ViewModel() {
         val maxNormalWeight = 24.99 * (height * height)
 
         val index = when (bmi) {
-            in 0.0..18.49 -> 0
-            in 18.5..24.99 -> 1
-            in 25.0..29.99 -> 2
-            in 30.0..34.99 -> 3
+            in 0.0..18.449 -> 0
+            in 18.5..24.949 -> 1
+            in 25.0..29.949 -> 2
+            in 30.0..34.949 -> 3
             else -> 4
         }
 

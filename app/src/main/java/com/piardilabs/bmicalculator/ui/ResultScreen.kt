@@ -44,7 +44,7 @@ fun ResultPreview() {
     BMICalculatorTheme {
         ResultScreen(
             bmiViewModel = BmiViewModel(),
-            selectedGender = 0, height = 1.67f, weight = 70f,
+            selectedGender = 1, height = 1.64f, weight = 80.5f,
             modifier = Modifier
                 .padding(24.dp)
                 .fillMaxHeight()
@@ -127,8 +127,8 @@ fun ResultScreen(
 fun SpannableResult(resultText: String, resultColor: Color, bmiResult: BmiResult): AnnotatedString {
 
     return buildAnnotatedString {
-        withStyle(style = SpanStyle(resultColor)) {
-            append(resultText)
+        withStyle(style = SpanStyle(color = resultColor, fontWeight = FontWeight.Bold)) {
+            append("$resultText: ")
         }
 
         val text = stringResource(
@@ -136,19 +136,33 @@ fun SpannableResult(resultText: String, resultColor: Color, bmiResult: BmiResult
             String.format("%.1f", bmiResult.minNormalWeight),
             String.format("%.1f", bmiResult.maxNormalWeight)
         )
-        append(" $text")
+        append(text)
 
         if (bmiResult.index == 0) {
-            withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
-                append(" (${String.format("%.1f", bmiResult.difference)})")
+            withStyle(style = SpanStyle(color = resultColor, fontWeight = FontWeight.Bold)) {
+                append(
+                    " (${
+                        String.format(
+                            "%.1f",
+                            bmiResult.difference
+                        )
+                    } ${stringResource(R.string.measure_weight)})"
+                )
             }
         } else if (bmiResult.index > 1) {
-            withStyle(style = SpanStyle(color = Color.Red, fontWeight = FontWeight.Bold)) {
-                append(" (+${String.format("%.1f", bmiResult.difference)} kg)")
+            withStyle(style = SpanStyle(color = resultColor, fontWeight = FontWeight.Bold)) {
+                append(
+                    " (+${
+                        String.format(
+                            "%.1f",
+                            bmiResult.difference
+                        )
+                    } ${stringResource(R.string.measure_weight)})"
+                )
             }
         } else {
-            withStyle(style = SpanStyle(color = Color.Green, fontWeight = FontWeight.Bold)) {
-                append(" (:))")
+            withStyle(style = SpanStyle(color = resultColor, fontWeight = FontWeight.Bold)) {
+                append(" (${stringResource(R.string.result_normal)})")
             }
         }
 
