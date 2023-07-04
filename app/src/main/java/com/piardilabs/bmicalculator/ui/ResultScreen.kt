@@ -8,6 +8,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
@@ -36,6 +38,7 @@ import com.piardilabs.bmicalculator.domain.BmiResult
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
 import com.piardilabs.bmicalculator.viewmodel.BmiViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -74,6 +77,21 @@ fun ResultScreen(
     )
 
     val bmiResult = bmiViewModel.calculateBMI(height, weight)
+
+    //val coroutineScope = rememberCoroutineScope()
+    //coroutineScope.launch {
+    LaunchedEffect(true) {
+        bmiViewModel.saveResult(
+            gender = selectedGender,
+            height = height,
+            weight = weight,
+            bmi = bmiResult.bmi,
+            index = bmiResult.index,
+            difference = bmiResult.difference,
+            minNormalWeight = bmiResult.minNormalWeight,
+            maxNormalWeight = bmiResult.maxNormalWeight
+        )
+    }
 
     Column(
         modifier = modifier.semantics(mergeDescendants = true) {},

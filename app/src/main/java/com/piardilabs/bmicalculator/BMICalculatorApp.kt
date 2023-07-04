@@ -93,6 +93,19 @@ fun BMICalculatorApp(
         backStackEntry?.destination?.route ?: BMICalculatorScreen.ChooseGender.name
     )
 
+    //    val results = bmiViewModel.getSavedResults()
+//    val currentScreen = BMICalculatorScreen.valueOf(
+//        backStackEntry?.destination?.route?.let {
+//            it
+//        } ?: run {
+//            if (results != null) {
+//                BMICalculatorScreen.Result.name
+//            } else {
+//                BMICalculatorScreen.ChooseGender.name
+//            }
+//        }
+//    )
+
     Scaffold(
         topBar = {
             BMICalculatorAppBar(
