@@ -13,11 +13,13 @@
     <string name="text_ruler">regua</string>
     <string name="text_next">Próximo</string>
     <string name="text_back">Voltar</string>
+    <string name="text_save">Salvar</string>
     <string name="result_title">Resultado</string>
     <string name="result_normal">Ótimo!</string>
     <string name="result_bmi">Seu IMC é %s</string>
     <string name="result_bmi_detail">Peso normal para sua altura: %s kg - %s kg</string>
     <string name="disclaimer">Lembre-se: o IMC é útil para prever seu peso ideal e saudável, mas não deve ser totalmente preciso, pois não leva em consideração sua composição corporal geral. Portanto, use o IMC como uma ferramenta, mas não confie totalmente nele.</string>
+    <string name="historical_result_title">Histórico</string>
 
     <string-array name="results_text">
         <item>Abaixo do peso</item>

@@ -1,31 +1,35 @@
 package com.piardilabs.bmicalculator
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.piardilabs.bmicalculator.domain.SavedBmiResult
+import com.piardilabs.bmicalculator.ui.BMICalculatorAppBar
+import com.piardilabs.bmicalculator.ui.BMICalculatorBottomBar
 import com.piardilabs.bmicalculator.ui.ChooseGenderScreen
 import com.piardilabs.bmicalculator.ui.ChooseHeightScreen
 import com.piardilabs.bmicalculator.ui.ChooseWeightScreen
 import com.piardilabs.bmicalculator.ui.ResultScreen
+import com.piardilabs.bmicalculator.ui.SavedResultListScreen
 import com.piardilabs.bmicalculator.viewmodel.BmiViewModel
 
 const val DEFAULT_HEIGHT_SLIDER_POSITION = 0.50f
@@ -38,44 +42,15 @@ enum class BMICalculatorScreen(@StringRes val title: Int) {
     ChooseGender(title = R.string.gender_title),
     ChooseHeight(title = R.string.height_title),
     ChooseWeight(title = R.string.weight_title),
-    Result(title = R.string.result_title)
-}
-
-/**
- * Composable that displays the topBar and displays back button if back navigation is possible.
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BMICalculatorAppBar(
-    currentScreen: BMICalculatorScreen,
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TopAppBar(
-        title = { Text(stringResource(currentScreen.title)) },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary
-        ),
-        modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.text_back)
-                    )
-                }
-            }
-        }
-    )
+    Result(title = R.string.result_title),
+    Historical(title = R.string.historical_result_title)
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun BMICalculatorApp(
     bmiViewModel: BmiViewModel,
-    navController: NavHostController = rememberAnimatedNavController() //rememberNavController()
+    navController: NavHostController = rememberAnimatedNavController()
 ) {
     var selectedGender by rememberSaveable { mutableStateOf(-1) }
     var sliderHeight by rememberSaveable { mutableStateOf(DEFAULT_HEIGHT_SLIDER_POSITION) }
@@ -83,28 +58,32 @@ fun BMICalculatorApp(
     var height by rememberSaveable { mutableStateOf(0f) }
     var weight by rememberSaveable { mutableStateOf(0f) }
 
+//    val context = LocalContext.current
+//    val bmiViewModel : BmiViewModel = viewModel(factory = BmiViewModelFactory(context.applicationContext) )
+    val savedResults = bmiViewModel.savedResults.observeAsState(listOf()).value
+    Log.d("fpiardi", "savedResults=$savedResults")
+
     val sliderHeightValues = bmiViewModel.generateSpinnerValues(100, 220)
     val sliderWeightValues = bmiViewModel.generateSpinnerValues(40, 200)
 
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Get the name of the current screen
-    val currentScreen = BMICalculatorScreen.valueOf(
-        backStackEntry?.destination?.route ?: BMICalculatorScreen.ChooseGender.name
-    )
-
-    //    val results = bmiViewModel.getSavedResults()
 //    val currentScreen = BMICalculatorScreen.valueOf(
-//        backStackEntry?.destination?.route?.let {
-//            it
-//        } ?: run {
-//            if (results != null) {
-//                BMICalculatorScreen.Result.name
-//            } else {
-//                BMICalculatorScreen.ChooseGender.name
-//            }
-//        }
+//        backStackEntry?.destination?.route ?: BMICalculatorScreen.ChooseGender.name
 //    )
+    val currentScreen = BMICalculatorScreen.valueOf(
+        backStackEntry?.destination?.route?.let {
+            it
+        } ?: run {
+            if (savedResults.firstOrNull() != null) {
+                selectedGender = savedResults.first().gender
+                BMICalculatorScreen.ChooseWeight.name
+            } else {
+                BMICalculatorScreen.ChooseGender.name
+            }
+        }
+    )
 
     Scaffold(
         topBar = {
@@ -114,12 +93,15 @@ fun BMICalculatorApp(
                 navigateUp = { navController.navigateUp() },
                 modifier = Modifier.background(MaterialTheme.colorScheme.secondary)
             )
+        },
+        bottomBar = {
+            BMICalculatorBottomBar(navController)
         }
     ) { innerPadding ->
 
         AnimatedNavHost(
             navController = navController,
-            startDestination = BMICalculatorScreen.ChooseGender.name,
+            startDestination = currentScreen.name, //BMICalculatorScreen.ChooseGender.name,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(
@@ -208,6 +190,35 @@ fun BMICalculatorApp(
                     weight = weight,
                     modifier = Modifier
                         .padding(20.dp)
+                        .fillMaxHeight(),
+                )
+            }
+
+            composable(
+                route = BMICalculatorScreen.Historical.name,
+                enterTransition = {
+                    fadeIn(animationSpec = tween(500))
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(500))
+                }
+            ) {
+                val listSavedBmiResult = bmiViewModel.savedResults.value?.map {
+                    SavedBmiResult(
+                        date = it.date,
+                        gender = selectedGender,
+                        height = height,
+                        weight = weight,
+                        bmi = it.bmi,
+                        index = it.index,
+                        difference = it.difference
+                    )
+                } ?: listOf()
+
+                SavedResultListScreen(
+                    list = listSavedBmiResult,
+                    modifier = Modifier
+                        .padding(16.dp)
                         .fillMaxHeight(),
                 )
             }

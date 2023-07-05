@@ -1,17 +1,22 @@
 package com.piardilabs.bmicalculator.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.piardilabs.bmicalculator.Graph
 import com.piardilabs.bmicalculator.data.BmiResultEntity
 import com.piardilabs.bmicalculator.data.BmiResultRepository
 import com.piardilabs.bmicalculator.domain.BmiResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class BmiViewModel(
     private val bmiResultRepository: BmiResultRepository = Graph.bmiResultRepository
 ) : ViewModel() {
+
+    val savedResults: LiveData<List<BmiResultEntity>> = bmiResultRepository.getResults()
 
     fun generateSpinnerValues(minimalValue: Int, maximumValue: Int): List<Int> {
         var list = mutableListOf<Int>()
@@ -26,7 +31,7 @@ class BmiViewModel(
         weight: Float
     ): BmiResult {
 
-        val bmi = weight / (height * height) //27.889
+        val bmi = weight / (height * height)
         val minNormalWeight = 18.5 * (height * height)
         val maxNormalWeight = 24.99 * (height * height)
 
@@ -70,7 +75,8 @@ class BmiViewModel(
         minNormalWeight: Float,
         maxNormalWeight: Float
     ) {
-        withContext(viewModelScope.coroutineContext) {
+        //withContext(viewModelScope.coroutineContext) {
+        viewModelScope.launch(Dispatchers.IO) {
             bmiResultRepository.insert(
                 BmiResultEntity(
                     date = date,

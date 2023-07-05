@@ -3,7 +3,15 @@ package com.piardilabs.bmicalculator.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -28,22 +37,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import com.piardilabs.bmicalculator.Graph
 import com.piardilabs.bmicalculator.R
-import com.piardilabs.bmicalculator.TitleAndDescription
 import com.piardilabs.bmicalculator.domain.BmiResult
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
+import com.piardilabs.bmicalculator.utilities.toOneDecimal
 import com.piardilabs.bmicalculator.viewmodel.BmiViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun ResultPreview() {
+    Graph.provide(LocalContext.current)
+
     BMICalculatorTheme {
         ResultScreen(
             bmiViewModel = BmiViewModel(),
@@ -63,7 +73,6 @@ fun ResultScreen(
     weight: Float,
     modifier: Modifier = Modifier
 ) {
-
     val pagerState = rememberPagerState()
 
     val resultsText = stringArrayResource(R.array.results_text)
@@ -78,19 +87,10 @@ fun ResultScreen(
 
     val bmiResult = bmiViewModel.calculateBMI(height, weight)
 
-    //val coroutineScope = rememberCoroutineScope()
-    //coroutineScope.launch {
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(true) {
-        bmiViewModel.saveResult(
-            gender = selectedGender,
-            height = height,
-            weight = weight,
-            bmi = bmiResult.bmi,
-            index = bmiResult.index,
-            difference = bmiResult.difference,
-            minNormalWeight = bmiResult.minNormalWeight,
-            maxNormalWeight = bmiResult.maxNormalWeight
-        )
+        //scroll to page
+        pagerState.scrollToPage(bmiResult.index)
     }
 
     Column(
@@ -104,20 +104,13 @@ fun ResultScreen(
             items.add(ResultObject(s, resultsIndex[index], resultColors[index]))
         }
 
-        //scroll to page
-        val coroutineScope = rememberCoroutineScope()
-        coroutineScope.launch {
-            // Call scroll to on pagerState
-            pagerState.scrollToPage(bmiResult.index)
-        }
-
         val description = SpannableResult(
             resultText = resultsText[bmiResult.index],
             resultColor = items[bmiResult.index].color,
             bmiResult = bmiResult
         )
         TitleAndDescription(
-            title = stringResource(R.string.result_bmi, String.format("%.1f", bmiResult.bmi)),
+            title = stringResource(R.string.result_bmi, bmiResult.bmi.toOneDecimal()),
             annotatedString = description
         )
 
@@ -137,6 +130,30 @@ fun ResultScreen(
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.labelSmall
         )
+        Button(
+            enabled = true,
+            onClick = {
+                coroutineScope.launch {
+                    bmiViewModel.saveResult(
+                        gender = selectedGender,
+                        height = height,
+                        weight = weight,
+                        bmi = bmiResult.bmi,
+                        index = bmiResult.index,
+                        difference = bmiResult.difference,
+                        minNormalWeight = bmiResult.minNormalWeight,
+                        maxNormalWeight = bmiResult.maxNormalWeight
+                    )
+                }
+            }
+        ) {
+            Text(
+                text = stringResource(R.string.text_save),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
     }
 
 }
@@ -151,31 +168,21 @@ fun SpannableResult(resultText: String, resultColor: Color, bmiResult: BmiResult
 
         val text = stringResource(
             R.string.result_bmi_detail,
-            String.format("%.1f", bmiResult.minNormalWeight),
-            String.format("%.1f", bmiResult.maxNormalWeight)
+            bmiResult.minNormalWeight.toOneDecimal(),
+            bmiResult.maxNormalWeight.toOneDecimal()
         )
         append(text)
 
         if (bmiResult.index == 0) {
             withStyle(style = SpanStyle(color = resultColor, fontWeight = FontWeight.Bold)) {
                 append(
-                    " (${
-                        String.format(
-                            "%.1f",
-                            bmiResult.difference
-                        )
-                    } ${stringResource(R.string.measure_weight)})"
+                    " (${bmiResult.difference.toOneDecimal()} ${stringResource(R.string.measure_weight)})"
                 )
             }
         } else if (bmiResult.index > 1) {
             withStyle(style = SpanStyle(color = resultColor, fontWeight = FontWeight.Bold)) {
                 append(
-                    " (+${
-                        String.format(
-                            "%.1f",
-                            bmiResult.difference
-                        )
-                    } ${stringResource(R.string.measure_weight)})"
+                    " (+${bmiResult.difference.toOneDecimal()} ${stringResource(R.string.measure_weight)})"
                 )
             }
         } else {
