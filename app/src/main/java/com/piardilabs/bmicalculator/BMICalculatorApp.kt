@@ -205,6 +205,7 @@ fun BMICalculatorApp(
             ) {
                 val listSavedBmiResult = bmiViewModel.savedResults.value?.map {
                     SavedBmiResult(
+                        id = it.id,
                         date = it.date,
                         gender = selectedGender,
                         height = height,
@@ -217,6 +218,7 @@ fun BMICalculatorApp(
 
                 SavedResultListScreen(
                     list = listSavedBmiResult,
+                    bmiViewModel,
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxHeight(),

@@ -11,6 +11,10 @@ class BmiResultRepository constructor(private val bmiResultDao: BmiResultDao) {
 
     suspend fun insert(bmiResultEntity: BmiResultEntity) = bmiResultDao.insert(bmiResultEntity)
 
+    suspend fun delete(bmiResultEntity: BmiResultEntity) = bmiResultDao.delete(bmiResultEntity)
+
+    suspend fun delete(id: Int) = bmiResultDao.delete(id)
+
     companion object {
 
         // For Singleton instantiation

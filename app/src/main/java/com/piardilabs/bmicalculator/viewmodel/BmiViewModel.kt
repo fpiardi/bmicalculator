@@ -9,7 +9,6 @@ import com.piardilabs.bmicalculator.data.BmiResultRepository
 import com.piardilabs.bmicalculator.domain.BmiResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class BmiViewModel(
@@ -60,10 +59,6 @@ class BmiViewModel(
         )
     }
 
-    fun getSavedResults(): List<BmiResultEntity>? {
-        return bmiResultRepository.getResults().value
-    }
-
     suspend fun saveResult(
         date: Long = Calendar.getInstance().time.time,
         gender: Int,
@@ -90,6 +85,12 @@ class BmiViewModel(
                     maxNormalWeight = maxNormalWeight
                 )
             )
+        }
+    }
+
+    suspend fun removeResult(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            bmiResultRepository.delete(id)
         }
     }
 

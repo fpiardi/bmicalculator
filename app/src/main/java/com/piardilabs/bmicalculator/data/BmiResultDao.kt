@@ -2,6 +2,7 @@ package com.piardilabs.bmicalculator.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -19,4 +20,10 @@ interface BmiResultDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(bmiResultEntity: BmiResultEntity)
+
+    @Delete
+    suspend fun delete(bmiResultEntity: BmiResultEntity)
+
+    @Query("DELETE FROM bmi_results WHERE id = :id")
+    suspend fun delete(id: Int)
 }

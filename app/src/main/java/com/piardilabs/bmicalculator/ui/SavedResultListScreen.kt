@@ -1,23 +1,42 @@
 package com.piardilabs.bmicalculator.ui
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissState
+import androidx.compose.material3.DismissValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -30,9 +49,8 @@ import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
 import com.piardilabs.bmicalculator.utilities.formatToViewDateDefaults
 import com.piardilabs.bmicalculator.utilities.toFormattedBmiIndex
 import com.piardilabs.bmicalculator.utilities.toOneDecimal
-import com.piardilabs.bmicalculator.utilities.toOneDecimalOrTextForZero
-import com.piardilabs.bmicalculator.utilities.toPriceAmount
-import java.text.SimpleDateFormat
+import com.piardilabs.bmicalculator.viewmodel.BmiViewModel
+import kotlinx.coroutines.launch
 import java.util.Date
 
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -41,6 +59,7 @@ import java.util.Date
 fun SavedResultListPreview() {
     val listSavedBmiResult = listOf(
         SavedBmiResult(
+            id = 1,
             date = 1676205240,
             gender = 0,
             height = 1.67F,
@@ -50,6 +69,7 @@ fun SavedResultListPreview() {
             difference = -5.694647F
         ),
         SavedBmiResult(
+            id = 2,
             date = 1677760440,
             gender = 0,
             height = 1.67F,
@@ -59,6 +79,7 @@ fun SavedResultListPreview() {
             difference = 0F
         ),
         SavedBmiResult(
+            id = 3,
             date = 1680352440,
             gender = 0,
             height = 1.67F,
@@ -72,6 +93,7 @@ fun SavedResultListPreview() {
     BMICalculatorTheme {
         SavedResultListScreen(
             list = listSavedBmiResult,
+            bmiViewModel = BmiViewModel(),
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxHeight()
@@ -79,15 +101,46 @@ fun SavedResultListPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SavedResultListScreen(
     list: List<SavedBmiResult>,
+    bmiViewModel: BmiViewModel,
     modifier: Modifier
 ) {
+
+    val coroutineScope = rememberCoroutineScope()
+
     LazyColumn(modifier = modifier) {
-        items(list) {
-            SavedBmiItem(it)
-        }
+        items(
+            items = list,
+            key = { it.id },
+            itemContent = { item ->
+                val dismissState = rememberDismissState(
+                    initialValue = DismissValue.Default,
+                    confirmValueChange = {
+                        when (it) {
+                            DismissValue.DismissedToStart -> {
+                                // Do Something when swipe End To Start
+                                coroutineScope.launch {
+                                    bmiViewModel.removeResult(item.id)
+                                }
+                                true
+                            }
+                            else -> {
+                                false
+                            }
+                        }
+                    }
+                )
+                SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(DismissDirection.EndToStart),
+                    background = { SwipeBackground(dismissState) },
+                    dismissContent = { SavedBmiItem(item) }
+                )
+            }
+        )
     }
 }
 
@@ -159,4 +212,42 @@ fun SavedBmiItem(item: SavedBmiResult) {
 
     }
 
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwipeBackground(dismissState: DismissState) {
+    val direction = dismissState.dismissDirection ?: return
+
+    val color by animateColorAsState(
+        when (dismissState.targetValue) {
+            DismissValue.Default -> Color.LightGray
+            DismissValue.DismissedToEnd -> Color.Green
+            DismissValue.DismissedToStart -> Color.Red
+        }
+    )
+    val alignment = when (direction) {
+        DismissDirection.StartToEnd -> Alignment.CenterStart
+        DismissDirection.EndToStart -> Alignment.CenterEnd
+    }
+    val icon = when (direction) {
+        DismissDirection.StartToEnd -> Icons.Default.Done
+        DismissDirection.EndToStart -> Icons.Default.Delete
+    }
+    val scale by animateFloatAsState(
+        if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f
+    )
+
+    Box(
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .background(color = color),
+        contentAlignment = alignment
+    ) {
+        Icon(
+            icon,
+            contentDescription = "Localized description",
+            modifier = Modifier.scale(scale)
+        )
+    }
 }
