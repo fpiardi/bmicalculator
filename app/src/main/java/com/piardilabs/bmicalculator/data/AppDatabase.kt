@@ -1,6 +1,7 @@
 package com.piardilabs.bmicalculator.data
 
 import android.content.Context
+import android.os.Debug
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -8,6 +9,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.piardilabs.bmicalculator.BuildConfig
 import com.piardilabs.bmicalculator.utilities.DATABASE_NAME
 import com.piardilabs.bmicalculator.workers.SeedDatabaseWorker
 
@@ -38,8 +40,10 @@ abstract class AppDatabase : RoomDatabase() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
 
-                        val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>().build()
-                        WorkManager.getInstance(context).enqueue(request)
+                        if (BuildConfig.DEBUG) {
+                            val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>().build()
+                            WorkManager.getInstance(context).enqueue(request)
+                        }
                     }
                 })
                 .build()

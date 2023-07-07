@@ -8,13 +8,7 @@ import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
 import com.piardilabs.bmicalculator.viewmodel.BmiViewModel
 import com.piardilabs.bmicalculator.viewmodel.BmiViewModelFactory
 
-enum class Measure {
-    HEIGHT,
-    WEIGHT
-}
-
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -26,4 +20,5 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }

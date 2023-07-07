@@ -58,13 +58,14 @@ fun ChooseHeightScreenPreview() {
 @Composable
 fun ChooseHeightScreen(
     selectedGender: Int,
+    hasHistoricalData: Boolean = false,
     sliderValues: List<Int>,
     sliderPosition: Float,
     onNextButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
     onSliderValueChange: (Float) -> Unit
 ) {
-    val alreadyChangeSlide = (sliderPosition != DEFAULT_HEIGHT_SLIDER_POSITION)
+    val alreadyChangeSlide = (sliderPosition != DEFAULT_HEIGHT_SLIDER_POSITION) || hasHistoricalData
 
     Column(
         modifier = modifier,
@@ -180,7 +181,9 @@ private fun VerticalRulerWithSlider(
 
                 colors = customSliderColors(),
                 value = sliderPosition,
-                onValueChange = { onSliderValueChange(it) }
+                onValueChange = {
+                    onSliderValueChange(it)
+                }
             )
         }
 

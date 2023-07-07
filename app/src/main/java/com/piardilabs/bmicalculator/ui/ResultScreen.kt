@@ -58,6 +58,7 @@ fun ResultPreview() {
         ResultScreen(
             bmiViewModel = BmiViewModel(),
             selectedGender = 1, height = 1.64f, weight = 80.5f,
+            onSaveButtonClicked = {},
             modifier = Modifier
                 .padding(24.dp)
                 .fillMaxHeight()
@@ -71,6 +72,7 @@ fun ResultScreen(
     selectedGender: Int,
     height: Float,
     weight: Float,
+    onSaveButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState()
@@ -144,6 +146,7 @@ fun ResultScreen(
                         minNormalWeight = bmiResult.minNormalWeight,
                         maxNormalWeight = bmiResult.maxNormalWeight
                     )
+                    onSaveButtonClicked()
                 }
             }
         ) {

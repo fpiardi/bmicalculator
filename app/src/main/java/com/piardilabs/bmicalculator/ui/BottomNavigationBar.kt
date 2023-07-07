@@ -15,10 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.piardilabs.bmicalculator.BMICalculatorScreen
+import com.piardilabs.bmicalculator.R
 
 data class BottomNavItem(
     val name: String,
@@ -41,12 +43,12 @@ fun BMICalculatorBottomBar(
     ) {
         val bottomNavItems = listOf(
             BottomNavItem(
-                name = "Add",
+                name = stringResource(R.string.bottom_nav_add),
                 route = BMICalculatorScreen.ChooseGender.name,
                 icon = Icons.Rounded.Create,
             ),
             BottomNavItem(
-                name = "Home",
+                name = stringResource(R.string.bottom_nav_historical_list),
                 route = BMICalculatorScreen.Historical.name,
                 icon = Icons.Rounded.Home,
             ),

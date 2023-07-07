@@ -31,6 +31,8 @@ import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Composition
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -43,6 +45,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.piardilabs.bmicalculator.R
 import com.piardilabs.bmicalculator.domain.SavedBmiResult
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
@@ -56,7 +62,7 @@ import java.util.Date
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun SavedResultListPreview() {
+fun HistoricalListPreview() {
     val listSavedBmiResult = listOf(
         SavedBmiResult(
             id = 1,
@@ -91,7 +97,7 @@ fun SavedResultListPreview() {
     )
 
     BMICalculatorTheme {
-        SavedResultListScreen(
+        HistoricalListScreen(
             list = listSavedBmiResult,
             bmiViewModel = BmiViewModel(),
             modifier = Modifier
@@ -103,7 +109,7 @@ fun SavedResultListPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SavedResultListScreen(
+fun HistoricalListScreen(
     list: List<SavedBmiResult>,
     bmiViewModel: BmiViewModel,
     modifier: Modifier

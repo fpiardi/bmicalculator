@@ -19,7 +19,12 @@
     <string name="result_bmi">Your BMI is %s</string>
     <string name="result_bmi_detail">Normal weight for your height: %s kg - %s kg</string>
     <string name="disclaimer">Remember: BMI is useful for predicting your ideal healthy weight, it is not meant to be entirely accurate, since it does not take into consideration your overall body composition. So use BMI as a tool, but don’t rely on it entirely.</string>
-    <string name="historical_result_title">Historical</string>
+    <string name="historical_list_title">Historical</string>
+    <string name="historical_graph_title">Historical</string>
+    <string name="historical_empty">There is no saved results to show yet</string>
+    <string name="bottom_nav_add">Add</string>
+    <string name="bottom_nav_historical_list">List</string>
+    <string name="bottom_nav_historical_graph">Graph</string>
 
     <string-array name="results_text">
         <item>Under Weight</item>

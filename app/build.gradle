@@ -24,6 +24,7 @@ android {
 
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -32,13 +33,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
-//    kotlinOptions {
-//        jvmTarget = '1.8'
-//    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -86,6 +80,9 @@ dependencies {
     // Work Manager, used for SeedDatabaseWorker example
     implementation "androidx.work:work-runtime-ktx:2.8.1"
     implementation "com.google.code.gson:gson:2.10.1"
+
+    // Lottie in Jetpack Compose
+    implementation ("com.airbnb.android:lottie-compose:$lottie_version")
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

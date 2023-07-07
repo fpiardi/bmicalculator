@@ -63,13 +63,14 @@ fun ChooseWeightScreenPreview() {
 @Composable
 fun ChooseWeightScreen(
     selectedGender: Int,
+    hasHistoricalData: Boolean = false,
     sliderValues: List<Int>,
     sliderPosition: Float,
     onNextButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
     onSliderValueChange: (Float) -> Unit
 ) {
-    val alreadyChangeSlide = (sliderPosition != DEFAULT_WEIGHT_SLIDER_POSITION)
+    val alreadyChangeSlide = (sliderPosition != DEFAULT_WEIGHT_SLIDER_POSITION) || hasHistoricalData
 
     Column(
         modifier = modifier,

@@ -14,18 +14,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import com.piardilabs.bmicalculator.Measure
 import com.piardilabs.bmicalculator.R
 
-//fun GetIndexColor(index: Int): Color {
-//    val resultColors = listOf(
-//        colorResource(R.color.blue),
-//        colorResource(R.color.green),
-//        colorResource(R.color.yellow),
-//        colorResource(R.color.orange),
-//        colorResource(R.color.red)
-//    )
-//}
+enum class Measure {
+    HEIGHT,
+    WEIGHT
+}
 
 @Composable
 fun TitleAndDescription(title: String, description: String? = null, annotatedString: AnnotatedString? = null) {

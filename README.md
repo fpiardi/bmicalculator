@@ -42,6 +42,7 @@ The project was created using Jetpack Compose and Room Database to save the resu
 - [Jetpack Compose for Android Developers](https://developer.android.com/courses/jetpack-compose/course)
 - [Accessibility in Compose](https://developer.android.com/jetpack/compose/accessibility)
 - [Semantics and TalkBack with Jetpack Compose](https://bryanherbst.com/2020/11/03/compose-semantics-talkback/)
+- [Lottie](https://lottiefiles.com/)
 
 ### Other links or examples
 - [Get free images](https://www.freepik.com/search?format=search&last_filter=ai&last_value=only&query=avatar%20body&selection=1&type=photo)
