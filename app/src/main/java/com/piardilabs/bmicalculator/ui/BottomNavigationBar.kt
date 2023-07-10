@@ -1,11 +1,8 @@
 package com.piardilabs.bmicalculator.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -44,7 +41,7 @@ fun BMICalculatorBottomBar(
         val bottomNavItems = listOf(
             BottomNavItem(
                 name = stringResource(R.string.bottom_nav_add),
-                route = BMICalculatorScreen.ChooseGender.name,
+                route = BMICalculatorScreen.ChooseWeight.name,
                 icon = Icons.Rounded.Create,
             ),
             BottomNavItem(
@@ -58,7 +55,7 @@ fun BMICalculatorBottomBar(
 
             NavigationBarItem(
                 selected = selected,
-                onClick = { navController.navigate(item.route) },
+                onClick = { handleBottomNavItemClicked(item, navController) },
                 label = {
                     Text(
                         text = item.name,
@@ -74,4 +71,13 @@ fun BMICalculatorBottomBar(
             )
         }
     }
+}
+
+private fun handleBottomNavItemClicked(item: BottomNavItem, navController: NavHostController) {
+    if (item.route == BMICalculatorScreen.ChooseWeight.name) {
+        navController.navigate(BMICalculatorScreen.ChooseGender.name)
+        navController.navigate(BMICalculatorScreen.ChooseHeight.name)
+    }
+
+    navController.navigate(item.route)
 }

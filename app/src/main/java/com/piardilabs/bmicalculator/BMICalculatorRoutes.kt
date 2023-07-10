@@ -1,5 +1,6 @@
 package com.piardilabs.bmicalculator
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -66,16 +68,24 @@ fun BMICalculatorApp(
     var sliderWeight by rememberSaveable { mutableStateOf(DEFAULT_WEIGHT_SLIDER_POSITION) }
     var height by rememberSaveable { mutableStateOf(0f) }
     var weight by rememberSaveable { mutableStateOf(0f) }
+    val useLatestSavedValues = rememberSaveable { true }
 
     val savedResults = bmiViewModel.savedResults.observeAsState(listOf()).value
-//    if (savedResults.isNotEmpty()) {
-//        val lastResult = savedResults.first()
-//        selectedGender = lastResult.gender
-//        height = lastResult.height
-//        weight = lastResult.weight
-//        sliderHeight = ((lastResult.height * 100) - MINIMAL_HEIGHT) / (MAXIMUM_HEIGHT - MINIMAL_HEIGHT)
-//        sliderWeight = (lastResult.weight - MINIMAL_WEIGHT) / (MAXIMUM_WEIGHT - MINIMAL_WEIGHT)
-//    }
+
+
+    if (savedResults.isNotEmpty()) {
+
+        LaunchedEffect(useLatestSavedValues) {
+            val lastResult = savedResults.first()
+            selectedGender = lastResult.gender
+            height = lastResult.height
+            weight = lastResult.weight
+            sliderHeight = ((lastResult.height * 100) - MINIMAL_HEIGHT) / (MAXIMUM_HEIGHT - MINIMAL_HEIGHT)
+            sliderWeight = (lastResult.weight - MINIMAL_WEIGHT) / (MAXIMUM_WEIGHT - MINIMAL_WEIGHT)
+        }
+
+    }
+
 
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
