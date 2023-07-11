@@ -43,14 +43,13 @@ The project was created using Jetpack Compose and Room Database to save the resu
 - [Accessibility in Compose](https://developer.android.com/jetpack/compose/accessibility)
 - [Semantics and TalkBack with Jetpack Compose](https://bryanherbst.com/2020/11/03/compose-semantics-talkback/)
 - [Lottie](https://lottiefiles.com/)
+- [Graphics in Compose](https://developer.android.com/jetpack/compose/graphics/draw/overview)
 
 ### Other links or examples
 - [Get free images](https://www.freepik.com/search?format=search&last_filter=ai&last_value=only&query=avatar%20body&selection=1&type=photo)
 - [Customizing the slider](https://piotrprus.medium.com/custom-slider-in-jetpack-compose-43ed08e2c338)
 - [Animations in Navigation Compose](https://medium.com/androiddevelopers/animations-in-navigation-compose-36d48870776b)
 - [Jetpack Compose Swipe To Dismiss Made Easy](https://medium.com/mobile-app-development-publication/jetpack-compose-swipe-to-dismiss-made-easy-323ca80a0355)
-- [Body mass index (BMI)](https://www.nhsinform.scot/healthy-living/food-and-nutrition/healthy-eating-and-weight-loss/body-mass-index-bmi)
-- [Why BMI is inaccurate and misleading](https://www.medicalnewstoday.com/articles/265215)
 - [Use Play Console free machine translation service](https://play.google.com/console/developers/app/app-translation-embed)
 
 ### :books: Best Android Gists

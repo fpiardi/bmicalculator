@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -49,6 +50,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.piardilabs.bmicalculator.Graph
 import com.piardilabs.bmicalculator.R
 import com.piardilabs.bmicalculator.domain.SavedBmiResult
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
@@ -63,6 +65,8 @@ import java.util.Date
 @Preview("large font", fontScale = 2f, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun HistoricalListPreview() {
+    Graph.provide(LocalContext.current)
+
     val listSavedBmiResult = listOf(
         SavedBmiResult(
             id = 1,
@@ -184,12 +188,12 @@ fun SavedBmiItem(item: SavedBmiResult) {
             )
             {
                 Text(
-                    text = item.bmi.toOneDecimal(),
+                    text = "${item.weight.toOneDecimal()} ${stringResource(R.string.measure_weight)}",
                     style = MaterialTheme.typography.headlineLarge
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = resultsText[item.index],
+                    text = "${resultsText[item.index]} (${item.bmi.toOneDecimal()})",
                     style = MaterialTheme.typography.titleMedium
                 )
             }

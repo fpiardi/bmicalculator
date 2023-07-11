@@ -46,9 +46,14 @@ fun BMICalculatorBottomBar(
             ),
             BottomNavItem(
                 name = stringResource(R.string.bottom_nav_historical_list),
-                route = BMICalculatorScreen.Historical.name,
+                route = BMICalculatorScreen.HistoricalList.name,
                 icon = Icons.Rounded.Home,
             ),
+            BottomNavItem(
+                name = stringResource(R.string.bottom_nav_historical_graph),
+                route = BMICalculatorScreen.HistoricalGraph.name,
+                icon = Icons.Rounded.Home,
+            )
         )
         bottomNavItems.forEach { item ->
             val selected = item.route == backStackEntry?.destination?.route

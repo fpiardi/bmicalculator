@@ -1,6 +1,5 @@
 package com.piardilabs.bmicalculator
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
@@ -24,15 +23,17 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.piardilabs.bmicalculator.domain.HistoricalGraphResult
 import com.piardilabs.bmicalculator.domain.SavedBmiResult
 import com.piardilabs.bmicalculator.ui.BMICalculatorAppBar
 import com.piardilabs.bmicalculator.ui.BMICalculatorBottomBar
 import com.piardilabs.bmicalculator.ui.ChooseGenderScreen
 import com.piardilabs.bmicalculator.ui.ChooseHeightScreen
 import com.piardilabs.bmicalculator.ui.ChooseWeightScreen
+import com.piardilabs.bmicalculator.ui.HistoricalGraphScreen
 import com.piardilabs.bmicalculator.ui.HistoricalListScreen
-import com.piardilabs.bmicalculator.ui.ResultScreen
 import com.piardilabs.bmicalculator.ui.LottieScreen
+import com.piardilabs.bmicalculator.ui.ResultScreen
 import com.piardilabs.bmicalculator.viewmodel.BmiViewModel
 
 const val DEFAULT_HEIGHT_SLIDER_POSITION = 0.50f
@@ -51,7 +52,8 @@ enum class BMICalculatorScreen(@StringRes val title: Int) {
     ChooseHeight(title = R.string.height_title),
     ChooseWeight(title = R.string.weight_title),
     Result(title = R.string.result_title),
-    Historical(title = R.string.historical_list_title)
+    HistoricalList(title = R.string.historical_list_title),
+    HistoricalGraph(title = R.string.historical_graph_title)
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -116,6 +118,7 @@ fun BMICalculatorApp(
             startDestination = BMICalculatorScreen.Splash.name,
             modifier = Modifier.padding(innerPadding)
         ) {
+
             composable(
                 route = BMICalculatorScreen.Splash.name
             ) {
@@ -128,13 +131,14 @@ fun BMICalculatorApp(
                                 navController.popBackStack()
                             }
                         } else {
-                            navController.navigate(BMICalculatorScreen.Historical.name) {
+                            navController.navigate(BMICalculatorScreen.HistoricalGraph.name) {
                                 navController.popBackStack()
                             }
                         }
                     }
                 )
             }
+
 
             composable(
                 route = BMICalculatorScreen.ChooseGender.name,
@@ -153,6 +157,7 @@ fun BMICalculatorApp(
                         .fillMaxHeight()
                 )
             }
+
 
             composable(
                 route = BMICalculatorScreen.ChooseHeight.name,
@@ -181,6 +186,7 @@ fun BMICalculatorApp(
                 )
             }
 
+
             composable(
                 route = BMICalculatorScreen.ChooseWeight.name,
                 enterTransition = {
@@ -208,6 +214,7 @@ fun BMICalculatorApp(
                 )
             }
 
+
             composable(
                 route = BMICalculatorScreen.Result.name,
                 enterTransition = {
@@ -223,7 +230,7 @@ fun BMICalculatorApp(
                     height = height,
                     weight = weight,
                     onSaveButtonClicked = {
-                        navController.navigate(BMICalculatorScreen.Historical.name)
+                        navController.navigate(BMICalculatorScreen.HistoricalList.name)
                     },
                     modifier = Modifier
                         .padding(20.dp)
@@ -231,8 +238,9 @@ fun BMICalculatorApp(
                 )
             }
 
+
             composable(
-                route = BMICalculatorScreen.Historical.name,
+                route = BMICalculatorScreen.HistoricalList.name,
                 enterTransition = {
                     fadeIn(animationSpec = tween(500))
                 },
@@ -245,8 +253,8 @@ fun BMICalculatorApp(
                         id = it.id,
                         date = it.date,
                         gender = selectedGender,
-                        height = height,
-                        weight = weight,
+                        height = it.height,
+                        weight = it.weight,
                         bmi = it.bmi,
                         index = it.index,
                         difference = it.difference
@@ -263,6 +271,42 @@ fun BMICalculatorApp(
                     HistoricalListScreen(
                         list = listSavedBmiResult,
                         bmiViewModel,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxHeight(),
+                    )
+                }
+            }
+
+
+            composable(
+                route = BMICalculatorScreen.HistoricalGraph.name,
+                enterTransition = {
+                    fadeIn(animationSpec = tween(500))
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(500))
+                }
+            ) {
+                val listSavedBmiResult = bmiViewModel.savedResults.value?.map {
+                    HistoricalGraphResult(
+                        date = it.date,
+                        weight = it.weight,
+                        minNormalWeight = it.minNormalWeight,
+                        maxNormalWeight = it.maxNormalWeight
+                    )
+                } ?: listOf()
+
+                if (listSavedBmiResult.isEmpty()) {
+                    LottieScreen(
+                        LottieCompositionSpec.RawRes(R.raw.shake_empty_box),
+                        title = stringResource(R.string.historical_empty),
+                        onAnimationFinished = {}
+                    )
+                } else {
+                    HistoricalGraphScreen(
+                        list = listSavedBmiResult,
+                        showBackgroundLines = true,
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxHeight(),
