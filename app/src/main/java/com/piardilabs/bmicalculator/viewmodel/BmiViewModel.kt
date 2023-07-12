@@ -7,6 +7,7 @@ import com.piardilabs.bmicalculator.Graph
 import com.piardilabs.bmicalculator.data.BmiResultEntity
 import com.piardilabs.bmicalculator.data.BmiResultRepository
 import com.piardilabs.bmicalculator.domain.BmiResult
+import com.piardilabs.bmicalculator.utilities.toOneDecimal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -30,15 +31,15 @@ class BmiViewModel(
         weight: Float
     ): BmiResult {
 
-        val bmi = weight / (height * height)
+        val bmi = (weight / (height * height)).toOneDecimal().toFloat()
         val minNormalWeight = 18.5 * (height * height)
         val maxNormalWeight = 24.99 * (height * height)
 
         val index = when (bmi) {
-            in 0.0..18.449 -> 0
-            in 18.5..24.949 -> 1
-            in 25.0..29.949 -> 2
-            in 30.0..34.949 -> 3
+            in 0.0..18.4 -> 0
+            in 18.5..24.9 -> 1
+            in 25.0..29.9 -> 2
+            in 30.0..34.9 -> 3
             else -> 4
         }
 

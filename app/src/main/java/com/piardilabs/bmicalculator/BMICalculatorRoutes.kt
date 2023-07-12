@@ -131,7 +131,7 @@ fun BMICalculatorApp(
                                 navController.popBackStack()
                             }
                         } else {
-                            navController.navigate(BMICalculatorScreen.HistoricalGraph.name) {
+                            navController.navigate(BMICalculatorScreen.HistoricalList.name) {
                                 navController.popBackStack()
                             }
                         }
@@ -272,7 +272,8 @@ fun BMICalculatorApp(
                         list = listSavedBmiResult,
                         bmiViewModel,
                         modifier = Modifier
-                            .padding(16.dp)
+                            //.padding(horizontal = 16.dp)
+                            //.padding(16.dp)
                             .fillMaxHeight(),
                     )
                 }

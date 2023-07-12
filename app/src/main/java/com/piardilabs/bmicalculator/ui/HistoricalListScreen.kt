@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
@@ -31,25 +32,21 @@ import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Composition
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.piardilabs.bmicalculator.Graph
 import com.piardilabs.bmicalculator.R
 import com.piardilabs.bmicalculator.domain.SavedBmiResult
@@ -120,6 +117,7 @@ fun HistoricalListScreen(
 ) {
 
     val coroutineScope = rememberCoroutineScope()
+    val density = LocalDensity.current
 
     LazyColumn(modifier = modifier) {
         items(
@@ -128,6 +126,7 @@ fun HistoricalListScreen(
             itemContent = { item ->
                 val dismissState = rememberDismissState(
                     initialValue = DismissValue.Default,
+                    positionalThreshold = { with(density) { 120.dp.toPx() } },
                     confirmValueChange = {
                         when (it) {
                             DismissValue.DismissedToStart -> {
@@ -167,7 +166,7 @@ fun SavedBmiItem(item: SavedBmiResult) {
 
     Card(
         Modifier
-            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = (resultColors[item.index]),
@@ -251,13 +250,14 @@ fun SwipeBackground(dismissState: DismissState) {
         Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clip(shape = RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp))
             .background(color = color),
         contentAlignment = alignment
     ) {
         Icon(
             icon,
-            contentDescription = "Localized description",
-            modifier = Modifier.scale(scale)
+            contentDescription = null,
+            modifier = Modifier.scale(scale).padding(end = 24.dp)
         )
     }
 }

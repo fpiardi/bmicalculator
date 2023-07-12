@@ -18,9 +18,9 @@
     <string name="result_normal">Excelente!</string>
     <string name="result_bmi">Su IMC es %s</string>
     <string name="result_bmi_detail">Peso normal para tu estatura: %s kg - %s kg</string>
-    <string name="disclaimer">Recuerde: el IMC es útil para predecir su peso saludable ideal, no pretende ser del todo exacto, ya que no tiene en cuenta su composición corporal general. Así que use el BMI como una herramienta, pero no confíe en él por completo.</string>
+    <string name="disclaimer">Recuerde: el IMC es útil para predecir su peso saludable ideal, no pretende ser del todo exacto.</string>
     <string name="historical_list_title">Histórico</string>
-    <string name="historical_graph_title">Histórico</string>
+    <string name="historical_graph_title">Historial de peso</string>
     <string name="historical_empty">No hay resultados guardados para mostrar todavía</string>
     <string name="bottom_nav_add">Agregar</string>
     <string name="bottom_nav_historical_list">Lista</string>

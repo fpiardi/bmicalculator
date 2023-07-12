@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -36,6 +35,7 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.piardilabs.bmicalculator.Graph
 import com.piardilabs.bmicalculator.MAXIMUM_WEIGHT
 import com.piardilabs.bmicalculator.MINIMAL_WEIGHT
+import com.piardilabs.bmicalculator.R
 import com.piardilabs.bmicalculator.domain.HistoricalGraphResult
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
 import com.piardilabs.bmicalculator.utilities.formatToViewDateDefaults
@@ -83,7 +84,7 @@ fun HistoricalGraphPreview() {
             showBackgroundLines = true,
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxHeight()
+                .fillMaxWidth()
         )
     }
 }
@@ -97,14 +98,16 @@ fun HistoricalGraphScreen(
     val barColors = MaterialTheme.colorScheme.onBackground
     val pathColors = MaterialTheme.colorScheme.primary
     var graphData by remember {
-        mutableStateOf(list)
+        mutableStateOf(list.reversed())
     }
 
     val legendStyle = MaterialTheme.typography.labelSmall
+    val legendAxisY = stringResource(R.string.measure_weight)
     val animationProgress = remember { Animatable(0f) }
     val textMeasurer = rememberTextMeasurer()
     val configuration = LocalConfiguration.current
-    val dotRects = ArrayList<Rect>()
+    val dotRectList = ArrayList<Rect>()
+    var normalPathLegend : List<LegendOffsideAxisY>? = null
 
     LaunchedEffect(key1 = list, key2 = configuration, block = {
         animationProgress.animateTo(1f, tween(2000))
@@ -115,13 +118,14 @@ fun HistoricalGraphScreen(
             .padding(8.dp)
             .clip(shape = RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp))
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.inversePrimary)
+            .background(color = MaterialTheme.colorScheme.background)
     )
     {
+        //Box with graph and background lines
         Box(
             modifier = Modifier
-                .padding(start = 20.dp, bottom = 20.dp, top = 20.dp, end = 20.dp)
-                .aspectRatio(16 / 9f)
+                .padding(start = 48.dp, bottom = 24.dp, top = 24.dp, end = 24.dp)
+                //.aspectRatio(16 / 9f)
                 .fillMaxSize()
                 .pointerInput(Unit) {
                     detectTapGestures(
@@ -130,7 +134,7 @@ fun HistoricalGraphScreen(
                             // check if the tap offset is in one of the
                             // tracked Rects.
                             var index = 0
-                            for (rect in dotRects) {
+                            for (rect in dotRectList) {
                                 if (rect.contains(tapOffset)) {
                                     graphData = graphData.mapIndexed { i, item ->
                                         if (index == i) {
@@ -148,10 +152,10 @@ fun HistoricalGraphScreen(
                     )
                 }
                 .drawWithCache {
-                    val dotSpaces = 8.dp.toPx()
-                    dotRects.clear()
+                    val dotRectPadding = 16.dp.toPx()
+                    dotRectList.clear()
 
-                    val path = generatePath(graphData, size, dotRects, dotSpaces)
+                    val path = generatePath(graphData, size, dotRectList, dotRectPadding)
                     val filledPath = Path()
                     filledPath.addPath(path)
                     filledPath.lineTo(size.width, size.height) //line to bottom right of the graph
@@ -159,11 +163,13 @@ fun HistoricalGraphScreen(
                     filledPath.close()
 
                     val normalPath = generateNormalPath(graphData, size)
+                    normalPathLegend = getLegendOffsideAxisY(graphData, size)
 
                     val brushPath = Brush.verticalGradient(
                         listOf(
-                            pathColors.copy(alpha = 0.75f),
-                            Color.Transparent
+                            pathColors.copy(alpha = 0.85f),
+                            pathColors.copy(alpha = 0.40f)
+                            //Color.Transparent
                         )
                     )
 
@@ -187,7 +193,7 @@ fun HistoricalGraphScreen(
                             item.position?.let { position ->
                                 drawCircle(
                                     color = pathColors,
-                                    radius = 4.dp.toPx(),
+                                    radius = 5.dp.toPx(),
                                     style = Fill,
                                     center = Offset(position.x, position.y)
                                 )
@@ -205,7 +211,10 @@ fun HistoricalGraphScreen(
                                             AnnotatedString(Date(item.date).formatToViewDateDefaults()),
                                             style = legendStyle
                                         ),
-                                        topLeft = Offset(position.x - 12.dp.toPx(), size.height)
+                                        topLeft = Offset(
+                                            (size.width / 2) - 40.dp.toPx(),
+                                            size.height - 24.dp.toPx()
+                                        )
                                     )
                                 }
                             }
@@ -213,10 +222,10 @@ fun HistoricalGraphScreen(
 
                         //draw background grid
                         if (showBackgroundLines) {
-                            val barWidthPx = 0.5.dp.toPx()
+                            val barWidthPx = 0.1.dp.toPx()
                             drawRect(color = barColors, style = Stroke(barWidthPx))
 
-                            val verticalLines = 6
+                            val verticalLines = list.size
                             val verticalSize = size.width / (verticalLines + 1)
                             repeat(verticalLines) { i ->
                                 val startX = verticalSize * (i + 1)
@@ -245,27 +254,66 @@ fun HistoricalGraphScreen(
 
                 }
         )
+
+        // Box with legends
+        Box(
+            modifier = Modifier
+                .padding(start = 8.dp, bottom = 0.dp, top = 16.dp, end = 8.dp)
+                .drawWithCache {
+                    onDrawBehind {
+                        drawText(
+                            textLayoutResult = textMeasurer.measure(
+                                AnnotatedString(legendAxisY),
+                                style = legendStyle
+                            ),
+                            topLeft = Offset(0f, 0f)
+                        )
+
+                        normalPathLegend?.let {
+                            it.forEach { legend ->
+                                drawText(
+                                    textLayoutResult = textMeasurer.measure(
+                                        AnnotatedString(legend.weight.toOneDecimal()),
+                                        style = legendStyle
+                                    ),
+                                    topLeft = legend.position
+                                )
+                            }
+                        }
+
+                    }
+                }
+        )
     }
 }
 
+/**
+ * Generate the path of the weight, and calculate the clickable area of the dots
+ */
+private fun generatePath(
+    list: List<HistoricalGraphResult>,
+    size: Size,
+    dotRectList: ArrayList<Rect>,
+    dotSpaces: Float
+): Path {
 
-private fun generatePath(list: List<HistoricalGraphResult>, size: Size, dotRects: ArrayList<Rect>, dotSpaces: Float): Path {
     val path = Path()
+    val proportionY = calculateProportionY(list, size)
 
     list.forEachIndexed { index, item ->
         // positionX will be the size divide by number os measures
-        val positionX = (size.width / list.size) * (index + 1)
-
-        // calculate the weight proportion related to size height
-        val proportionY = size.height / (MAXIMUM_WEIGHT - MINIMAL_WEIGHT)
+        val positionX = size.width / (list.size - 1) * index
 
         // positionY should be inverted
-        val positionY = size.height - (item.weight * proportionY)
+        val positionY = size.height - ((item.weight - MINIMAL_WEIGHT) * proportionY)
         item.position = PointF(positionX, positionY)
 
         if (index == 0) {
             item.position = PointF(0f, positionY)
             path.moveTo(x = 0f, y = positionY)
+        } else if (index == list.size - 1) {
+            item.position = PointF(size.width, positionY)
+            path.lineTo(x = size.width, y = positionY)
         } else {
             path.lineTo(x = positionX, y = positionY)
             //to smothie path lines.. change lineTo(x,Y) to use cubicTo function
@@ -273,8 +321,10 @@ private fun generatePath(list: List<HistoricalGraphResult>, size: Size, dotRects
             //path.cubicTo((positionX * 0.6f), (positionY * 0.6f), (positionX * 0.6f), (positionY * 0.6f), positionX, positionY)
         }
 
+        Log.d("fpiardi", "items:${list.size} height:${size.height} proportionY:${proportionY} positionY:${positionY}")
+
         item.position?.let { position ->
-            dotRects.add(
+            dotRectList.add(
                 Rect(
                     top = validRectValue(position.y - dotSpaces),
                     left = validRectValue(position.x - dotSpaces),
@@ -283,10 +333,6 @@ private fun generatePath(list: List<HistoricalGraphResult>, size: Size, dotRects
                 )
             )
         }
-
-
-//        path.lineTo(x = positionX, y = positionY)
-//        //to smothie path lines.. change lineTo(x,Y) to use cubicTo function
 
     }
 
@@ -305,23 +351,58 @@ private fun validRectValue(value: Float, maxValue: Float? = null): Float {
     return newValue
 }
 
+/**
+ * Use the max weight the user saved and screen size height
+ */
+private fun calculateProportionY(list: List<HistoricalGraphResult>, size: Size): Float {
+    val maxWeight = list.maxOfOrNull { it.weight }?.inc() ?: MAXIMUM_WEIGHT.toFloat()
+    return size.height / (maxWeight - MINIMAL_WEIGHT)
+}
+
+/**
+ * Generate path with the range of normal weight
+ */
 private fun generateNormalPath(list: List<HistoricalGraphResult>, size: Size): Path {
     val path = Path()
+    val proportionY = calculateProportionY(list, size)
 
-    // positionX will be the size divide by number os measures
-    val positionX = (size.width / list.size) * list.size
-
-    // calculate the weight proportion related to size height
-    val proportionY = size.height / (MAXIMUM_WEIGHT - MINIMAL_WEIGHT)
-
-    // positionY should be inverted
-    val positionY = size.height - (list.first().maxNormalWeight * proportionY)
-
-    path.moveTo(x = 0f, y = size.height - list.first().maxNormalWeight * proportionY)
-    path.lineTo(x = positionX, y = size.height - list.last().maxNormalWeight * proportionY)
-    path.lineTo(x = positionX, y = size.height - list.last().minNormalWeight * proportionY)
-    path.lineTo(x = 0f, y = size.height - list.first().minNormalWeight * proportionY)
+    path.moveTo(x = 0f, y = size.height - ((list.first().maxNormalWeight - MINIMAL_WEIGHT) * proportionY))
+    path.lineTo(x = size.width, y = size.height - ((list.last().maxNormalWeight - MINIMAL_WEIGHT) * proportionY))
+    path.lineTo(x = size.width, y = size.height - ((list.last().minNormalWeight - MINIMAL_WEIGHT) * proportionY))
+    path.lineTo(x = 0f, y = size.height - ((list.first().minNormalWeight - MINIMAL_WEIGHT) * proportionY))
     path.close()
 
     return path
 }
+
+private fun getLegendOffsideAxisY(
+    list: List<HistoricalGraphResult>,
+    size: Size
+): List<LegendOffsideAxisY> {
+    val response = ArrayList<LegendOffsideAxisY>()
+    val proportionY = calculateProportionY(list, size)
+
+    response.add(
+        LegendOffsideAxisY(
+            Offset(
+                0f,
+                size.height - ((list.last().maxNormalWeight - MINIMAL_WEIGHT) * proportionY)
+            ), weight = list.last().maxNormalWeight
+        )
+    )
+    response.add(
+        LegendOffsideAxisY(
+            Offset(
+                0f,
+                size.height - ((list.last().minNormalWeight - MINIMAL_WEIGHT) * proportionY)
+            ), weight = list.last().minNormalWeight
+        )
+    )
+
+    return response
+}
+
+data class LegendOffsideAxisY(
+    val position: Offset,
+    val weight: Float
+)

@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -52,7 +53,7 @@ fun BMICalculatorBottomBar(
             BottomNavItem(
                 name = stringResource(R.string.bottom_nav_historical_graph),
                 route = BMICalculatorScreen.HistoricalGraph.name,
-                icon = Icons.Rounded.Home,
+                icon = ImageVector.vectorResource(R.drawable.baseline_stacked_bar_chart_24),
             )
         )
         bottomNavItems.forEach { item ->
