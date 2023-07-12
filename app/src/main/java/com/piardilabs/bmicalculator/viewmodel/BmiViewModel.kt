@@ -11,6 +11,7 @@ import com.piardilabs.bmicalculator.utilities.toOneDecimal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import kotlin.math.roundToInt
 
 class BmiViewModel(
     private val bmiResultRepository: BmiResultRepository = Graph.bmiResultRepository
@@ -31,7 +32,7 @@ class BmiViewModel(
         weight: Float
     ): BmiResult {
 
-        val bmi = (weight / (height * height)).toOneDecimal().toFloat()
+        val bmi = (((weight / (height * height)) * 10.0).roundToInt() / 10.0).toFloat()
         val minNormalWeight = 18.5 * (height * height)
         val maxNormalWeight = 24.99 * (height * height)
 

@@ -1,0 +1,48 @@
+
+Online Graphic Generator: https://www.norio.be/graphic-generator/
+
+Agora voce pode salvar o resultado do seu IMC e acompanhar sua evolução.
+Now you can save your BMI result and follow its evolution.
+Ahora puedes guardar tu resultado de IMC y seguir su evolución.
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Name: Calculadora IMC + Tracker Peso
+Tittle: Calcule seu IMC (Índice de Massa Corporal) e salve os resultados para acompanhar sua evolução.
+Description: Esta calculadora gratuita de IMC ajuda você a encontrar sua faixa de peso saudável.
+
+Características principais:
+🔢 Calcular o seu IMC de modo científico.
+⚖️ Descobrir a faixa de peso ideal para sua altura.
+📊 Registrar o histórico do seu peso e acompanhar sua evolução.
+🔒 Privacidade e Segurança: Este aplicativo nao envia nenhum dado informado. Os dados são salvos apenas no dispositivo. Não precisa de conexão com internet.
+🤩 Gratuito e sem propagandas.
+
+Baixe nosso aplicativo agora para o controle e acompanhamento do seu peso.
+
+Grupo de images:
+1. Adicione suas medidas
+2. Salve seu resultado
+3. Acompanhe seu histórico
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Name: BMI Calculator + Weight Tracker
+Title: Calculate your BMI (Body Mass Index) and save the results to follow your evolution.
+Description: This BMI Calculator helps you to find your healthy weight range.
+
+Main features:
+🔢 Scientifically calculate your BMI.
+⚖️ Discover the ideal weight range for your height.
+📊 Register your weight history and follow your evolution.
+🔒 Privacy and Security: This app does not send any informed data. Data is only saved on the device. No internet connection needed.
+🤩 Free and no advertisements.
+
+Download our app now for weight control and tracking.
+
+Image Group:
+1. Add your measurements
+2. Register the result
+3. Track your history
+

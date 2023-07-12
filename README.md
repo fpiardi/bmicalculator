@@ -9,16 +9,27 @@ The project was created using Jetpack Compose and Room Database to save the resu
 ## Screenshots
 <table width="100%">
     <tr>
-        <td width="25%"><img src="docs/light/BMI_gender.png"/></td>
-        <td width="25%"><img src="docs/light/BMI_height.png"/></td>
-        <td width="25%"><img src="docs/light/BMI_weight.png"/></td>
-        <td width="25%"><img src="docs/light/BMI_results.png"/></td>
+        <td width="20%"><img src="docs/en/light/BMI_gender.png"/></td>
+        <td width="20%"><img src="docs/en/light/BMI_height.png"/></td>
+        <td width="20%"><img src="docs/en/light/BMI_results.png"/></td>
+        <td width="20%"><img src="docs/en/light/BMI_list.png"/></td>
+        <td width="20%"><img src="docs/en/light/BMI_graph.png"/></td>
     </tr>
     <tr>
-        <td width="25%"><img src="docs/dark/BMI_gender.png"/></td>
-        <td width="25%"><img src="docs/dark/BMI_height.png"/></td>
-        <td width="25%"><img src="docs/dark/BMI_weight.png"/></td>
-        <td width="25%"><img src="docs/dark/BMI_results.png"/></td>
+        <td width="20%"><img src="docs/en/dark/BMI_gender.png"/></td>
+        <td width="20%"><img src="docs/en/dark/BMI_weight.png"/></td>
+        <td width="20%"><img src="docs/en/dark/BMI_results.png"/></td>
+        <td width="20%"><img src="docs/en/dark/BMI_list.png"/></td>
+        <td width="20%"><img src="docs/en/dark/BMI_graph.png"/></td>
+    </tr>
+</table>
+
+<table width="100%">
+    <tr>
+        <td width="100%"><img src="docs/en/BMI_graphic_resource.png"/></td>
+    </tr>
+    <tr>
+        <td width="33%" align="center"><img src="docs/BMI_video.gif"/></td>
     </tr>
 </table>
 

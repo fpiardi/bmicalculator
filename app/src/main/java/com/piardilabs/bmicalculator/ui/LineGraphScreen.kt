@@ -35,8 +35,10 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
@@ -101,7 +103,10 @@ fun HistoricalGraphScreen(
         mutableStateOf(list.reversed())
     }
 
-    val legendStyle = MaterialTheme.typography.labelSmall
+    val legendStyle = TextStyle(
+        color = MaterialTheme.colorScheme.secondary,
+        fontSize = MaterialTheme.typography.labelSmall.fontSize
+    )
     val legendAxisY = stringResource(R.string.measure_weight)
     val animationProgress = remember { Animatable(0f) }
     val textMeasurer = rememberTextMeasurer()
@@ -169,7 +174,6 @@ fun HistoricalGraphScreen(
                         listOf(
                             pathColors.copy(alpha = 0.85f),
                             pathColors.copy(alpha = 0.40f)
-                            //Color.Transparent
                         )
                     )
 
@@ -204,7 +208,10 @@ fun HistoricalGraphScreen(
                                             AnnotatedString(item.weight.toOneDecimal()),
                                             style = legendStyle
                                         ),
-                                        topLeft = Offset(position.x - 12.dp.toPx(), position.y)
+                                        topLeft = Offset(
+                                            position.x - 12.dp.toPx(),
+                                            position.y + 12.dp.toPx()
+                                        )
                                     )
                                     drawText(
                                         textLayoutResult = textMeasurer.measure(

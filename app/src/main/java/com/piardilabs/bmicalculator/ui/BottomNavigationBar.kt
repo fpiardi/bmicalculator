@@ -37,7 +37,7 @@ fun BMICalculatorBottomBar(
     val backStackEntry by navController.currentBackStackEntryAsState()
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
     ) {
         val bottomNavItems = listOf(
             BottomNavItem(

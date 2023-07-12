@@ -96,48 +96,43 @@ fun ResultScreen(
     }
 
     Column(
+        modifier = modifier.semantics(mergeDescendants = true) {},
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.Start
     ) {
-        Column(
-            modifier = modifier.semantics(mergeDescendants = true) {},
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.Start
-        ) {
 
-            val items = mutableListOf<ResultObject>()
-            resultsText.forEachIndexed { index, s ->
-                items.add(ResultObject(s, resultsIndex[index], resultColors[index]))
-            }
-
-            val description = SpannableResult(
-                resultText = resultsText[bmiResult.index],
-                resultColor = items[bmiResult.index].color,
-                bmiResult = bmiResult
-            )
-            TitleAndDescription(
-                title = stringResource(R.string.result_bmi, bmiResult.bmi.toOneDecimal()),
-                annotatedString = description
-            )
-
-            BMIResultsPager(
-                selectedGender = selectedGender,
-                items = items,
-                pagerState = pagerState,
-                modifier = Modifier
-                    .padding(start = 0.dp, top = 0.dp, end = 0.dp)
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.75f)
-            )
-
-            Text(
-                text = stringResource(R.string.disclaimer),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.labelSmall
-            )
-
+        val items = mutableListOf<ResultObject>()
+        resultsText.forEachIndexed { index, s ->
+            items.add(ResultObject(s, resultsIndex[index], resultColors[index]))
         }
+
+        val description = SpannableResult(
+            resultText = resultsText[bmiResult.index],
+            resultColor = items[bmiResult.index].color,
+            bmiResult = bmiResult
+        )
+        TitleAndDescription(
+            title = stringResource(R.string.result_bmi, bmiResult.bmi.toOneDecimal()),
+            annotatedString = description
+        )
+
+        BMIResultsPager(
+            selectedGender = selectedGender,
+            items = items,
+            pagerState = pagerState,
+            modifier = Modifier
+                .padding(start = 0.dp, top = 0.dp, end = 0.dp)
+                .fillMaxWidth()
+                .fillMaxHeight(0.75f)
+        )
+
+        Text(
+            text = stringResource(R.string.disclaimer),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.labelSmall
+        )
+
         Button(
             enabled = true,
             onClick = {
