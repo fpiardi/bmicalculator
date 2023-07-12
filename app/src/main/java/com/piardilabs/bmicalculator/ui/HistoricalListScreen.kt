@@ -181,9 +181,28 @@ fun SavedBmiItem(item: SavedBmiResult) {
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .weight(0.55F)
-                    .semantics(mergeDescendants = true) {}
+                modifier = Modifier.weight(0.45F)
+            )
+            {
+                Text(
+                    text = Date(item.date).formatToViewDateDefaults(),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = item.difference.toFormattedBmiIndex(
+                        index = item.index,
+                        textForZero = stringResource(R.string.result_normal),
+                        textForMeasure = stringResource(R.string.measure_weight)
+                    ),
+                    style = MaterialTheme.typography.headlineLarge
+                )
+            }
+
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier.weight(0.55F)
             )
             {
                 Text(
@@ -194,27 +213,6 @@ fun SavedBmiItem(item: SavedBmiResult) {
                 Text(
                     text = "${resultsText[item.index]} (${item.bmi.toOneDecimal()})",
                     style = MaterialTheme.typography.titleMedium
-                )
-            }
-
-            Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.End,
-                modifier = Modifier.semantics(mergeDescendants = true) {}
-            )
-            {
-                Text(
-                    text = Date(item.date).formatToViewDateDefaults(),
-                    style = MaterialTheme.typography.labelSmall
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = item.difference.toFormattedBmiIndex(
-                        index = item.index,
-                        textForZero = stringResource(R.string.result_normal),
-                        textForMeasure = stringResource(R.string.measure_weight)
-                    ),
-                    style = MaterialTheme.typography.headlineLarge
                 )
             }
         }

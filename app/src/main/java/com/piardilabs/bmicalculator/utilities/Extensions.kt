@@ -28,7 +28,7 @@ fun Float.toOneDecimal(): String {
  * Specifics for this project
  */
 fun Float.toFormattedBmiIndex(index: Int, textForZero: String, textForMeasure: String): String {
-    return if (this == 0F) {
+    return if (this == 0.0F && index == 1) {
         textForZero
     } else {
         val resultValue = this.toOneDecimal()
