@@ -1,11 +1,9 @@
 package com.piardilabs.bmicalculator.ui
 
 import android.content.res.Configuration
-import android.graphics.Color.toArgb
 import android.text.TextPaint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -17,11 +15,9 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
-import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
@@ -30,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.piardilabs.bmicalculator.*
 import com.piardilabs.bmicalculator.R
 import com.piardilabs.bmicalculator.ui.theme.BMICalculatorTheme
+import com.piardilabs.bmicalculator.viewmodel.BmiViewModel
 import kotlin.math.roundToInt
 
 @Preview(showBackground = true)
@@ -37,7 +34,7 @@ import kotlin.math.roundToInt
 @Composable
 fun VerticalSliderPreview() {
     BMICalculatorTheme {
-        VerticalRulerWithSlider(values = generateSpinnerValues(130, 200), 0.3f) {}
+        VerticalRulerWithSlider(values = BmiViewModel().generateSpinnerValues(130, 200), 0.3f) {}
     }
 }
 
@@ -48,7 +45,7 @@ fun ChooseHeightScreenPreview() {
     BMICalculatorTheme {
         ChooseHeightScreen(
             selectedGender = 1,
-            sliderValues = generateSpinnerValues(130, 200),
+            sliderValues =  BmiViewModel().generateSpinnerValues(130, 200),
             sliderPosition = 0.3f,
             onNextButtonClicked = {},
             modifier = Modifier
@@ -61,13 +58,14 @@ fun ChooseHeightScreenPreview() {
 @Composable
 fun ChooseHeightScreen(
     selectedGender: Int,
+    hasHistoricalData: Boolean = false,
     sliderValues: List<Int>,
     sliderPosition: Float,
     onNextButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
     onSliderValueChange: (Float) -> Unit
 ) {
-    val alreadyChangeSlide = (sliderPosition != DEFAULT_HEIGHT_SLIDER_POSITION)
+    val alreadyChangeSlide = (sliderPosition != DEFAULT_HEIGHT_SLIDER_POSITION) || hasHistoricalData
 
     Column(
         modifier = modifier,
@@ -183,7 +181,9 @@ private fun VerticalRulerWithSlider(
 
                 colors = customSliderColors(),
                 value = sliderPosition,
-                onValueChange = { onSliderValueChange(it) }
+                onValueChange = {
+                    onSliderValueChange(it)
+                }
             )
         }
 
