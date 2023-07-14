@@ -25,11 +25,9 @@ The project was created using Jetpack Compose and Room Database to save the resu
 </table>
 
 <table width="100%">
-    <tr>
-        <td width="100%"><img src="docs/en/BMI_graphic_resource.png"/></td>
-    </tr>
-    <tr>
-        <td width="33%" align="center"><img src="docs/BMI_video.gif"/></td>
+    <tr style="text-align: center;">
+        <td width="75%"><img src="docs/BMI_graphic_resource.png"/></td>
+        <td width="25%"><img src="docs/BMI_video.gif"/></td>
     </tr>
 </table>
 
