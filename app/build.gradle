@@ -6,14 +6,14 @@ plugins {
 
 android {
     namespace 'com.piardilabs.bmicalculator'
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.piardilabs.bmicalculator"
         minSdk 21
-        targetSdk 33
-        versionCode 6
-        versionName "1.1.0"
+        targetSdk 35
+        versionCode 9
+        versionName "1.1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -27,6 +27,15 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file("${rootDir}/keystores/upload-keystore.jks")
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+            storePassword RELEASE_KEYSTORE_PASSWORD
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -36,6 +45,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
