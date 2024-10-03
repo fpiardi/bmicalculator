@@ -8,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,7 +34,6 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -97,10 +95,13 @@ fun HistoricalGraphScreen(
     showBackgroundLines: Boolean,
     modifier: Modifier
 ) {
+    val reversedList = list.toMutableList()
+    reversedList.reverse()
+
     val barColors = MaterialTheme.colorScheme.onBackground
     val pathColors = MaterialTheme.colorScheme.primary
     var graphData by remember {
-        mutableStateOf(list.reversed())
+        mutableStateOf(reversedList.toList())
     }
 
     val legendStyle = TextStyle(

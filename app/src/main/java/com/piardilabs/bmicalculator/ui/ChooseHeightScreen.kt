@@ -135,7 +135,9 @@ private fun VerticalRulerWithSlider(
             .fillMaxWidth(0.95f)
     ) {
         val textRuler = stringResource(R.string.text_ruler)
-        HorizontalLinesAsRuler(values.reversed())
+        val reversedList = values.toMutableList()
+        reversedList.reverse()
+        HorizontalLinesAsRuler(reversedList)
 
         Column(
             modifier = Modifier

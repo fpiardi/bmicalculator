@@ -1,8 +1,6 @@
 package com.piardilabs.bmicalculator.ui
 
 import android.content.res.Configuration
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,28 +17,24 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissState
-import androidx.compose.material3.DismissValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -108,7 +102,6 @@ fun HistoricalListPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoricalListScreen(
     list: List<SavedBmiResult>,
@@ -117,37 +110,17 @@ fun HistoricalListScreen(
 ) {
 
     val coroutineScope = rememberCoroutineScope()
-    val density = LocalDensity.current
 
     LazyColumn(modifier = modifier) {
         items(
             items = list,
             key = { it.id },
             itemContent = { item ->
-                val dismissState = rememberDismissState(
-                    initialValue = DismissValue.Default,
-                    positionalThreshold = { with(density) { 120.dp.toPx() } },
-                    confirmValueChange = {
-                        when (it) {
-                            DismissValue.DismissedToStart -> {
-                                // Do Something when swipe End To Start
-                                coroutineScope.launch {
-                                    bmiViewModel.removeResult(item.id)
-                                }
-                                true
-                            }
-                            else -> {
-                                false
-                            }
-                        }
+                SavedBmiResultItem(item, onRemove = {
+                    coroutineScope.launch {
+                        bmiViewModel.removeResult(item.id)
                     }
-                )
-                SwipeToDismiss(
-                    state = dismissState,
-                    directions = setOf(DismissDirection.EndToStart),
-                    background = { SwipeBackground(dismissState) },
-                    dismissContent = { SavedBmiItem(item) }
-                )
+                })
             }
         )
     }
@@ -220,29 +193,15 @@ fun SavedBmiItem(item: SavedBmiResult) {
     }
 
 }
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SwipeBackground(dismissState: DismissState) {
-    val direction = dismissState.dismissDirection ?: return
 
-    val color by animateColorAsState(
-        when (dismissState.targetValue) {
-            DismissValue.Default -> Color.LightGray
-            DismissValue.DismissedToEnd -> Color.Green
-            DismissValue.DismissedToStart -> Color.Red
-        }
-    )
-    val alignment = when (direction) {
-        DismissDirection.StartToEnd -> Alignment.CenterStart
-        DismissDirection.EndToStart -> Alignment.CenterEnd
+
+@Composable
+fun DismissBackground(dismissState: SwipeToDismissBoxState) {
+    val color = when (dismissState.dismissDirection) {
+        SwipeToDismissBoxValue.StartToEnd -> Color.Transparent
+        SwipeToDismissBoxValue.EndToStart -> Color.Red
+        SwipeToDismissBoxValue.Settled -> Color.Transparent
     }
-    val icon = when (direction) {
-        DismissDirection.StartToEnd -> Icons.Default.Done
-        DismissDirection.EndToStart -> Icons.Default.Delete
-    }
-    val scale by animateFloatAsState(
-        if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f
-    )
 
     Box(
         Modifier
@@ -250,12 +209,53 @@ fun SwipeBackground(dismissState: DismissState) {
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(shape = RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp))
             .background(color = color),
-        contentAlignment = alignment
+        contentAlignment = Alignment.CenterEnd
     ) {
         Icon(
-            icon,
-            contentDescription = null,
-            modifier = Modifier.scale(scale).padding(end = 24.dp)
+            Icons.Default.Delete,
+            contentDescription = "delete",
+            modifier = Modifier.padding(end = 24.dp)
         )
     }
+}
+
+/**
+ * Composable representing an bmi result item with swipe-to-dismiss functionality.
+ *
+ * @param savedBmiResult The saved bmi result to display.
+ * @param modifier optional parameters to add extra behaviour to SavedBmiResultItem.
+ * @param onRemove Callback invoked when item is dismissed.
+ */
+@Composable
+fun SavedBmiResultItem(
+    savedBmiResult: SavedBmiResult,
+    modifier: Modifier = Modifier,
+    onRemove: (SavedBmiResult) -> Unit
+) {
+    val currentItem by rememberUpdatedState(savedBmiResult)
+
+    val dismissState = rememberSwipeToDismissBoxState(
+        initialValue = SwipeToDismissBoxValue.Settled,
+        confirmValueChange = {
+            when(it) {
+                SwipeToDismissBoxValue.EndToStart -> {
+                    onRemove(currentItem)
+                    true
+                } else -> {
+                    false
+                }
+
+            }
+        },
+        // positional threshold of 25%
+        positionalThreshold = { it * .25f }
+    )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        modifier = modifier,
+        backgroundContent = { DismissBackground(dismissState)},
+        content = {
+            SavedBmiItem(savedBmiResult)
+        })
 }
